@@ -1,0 +1,22 @@
+{
+	"name": "ip2location/ip2proxy-php",
+	"type": "library",
+	"description": "A PHP module to lookup for Proxy/VPN IP address from IP2Proxy database.",
+	"keywords": ["geolocation", "detect vpn", "ip to vpn"],
+	"homepage": "http://www.ip2location.com/",
+	"license": "GPL",
+	"authors": [
+		{
+			"name": "IP2Location",
+			"email": "support@ip2location.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"autoload": {
+		"classmap": [
+			"class.IP2Proxy.php"
+		]
+	}
+}

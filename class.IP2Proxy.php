@@ -271,7 +271,7 @@ class Database {
   /**
    * Column offset mapping
    *
-   * Each entry contains an array mapping databse version (0--23) to offset within a record.
+   * Each entry contains an array mapping databse version (0-3) to offset within a record.
    * A value of 0 means the column is not present in the given database version.
    *
    * @access private
@@ -386,7 +386,7 @@ class Database {
   private $date;
 
   /**
-   * Database's type (0--23)
+   * Database's type (0-3)
    *
    * @access private
    * @var int
