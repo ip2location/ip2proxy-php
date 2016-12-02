@@ -32,7 +32,7 @@ class Database {
    *
    * @var string
    */
-  const VERSION = '1.0.0';
+  const VERSION = '1.1.0';
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1147,22 +1147,12 @@ class Database {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Get the database's compilation date as a string of the form 'YYYY-MM-DD'
-   *
-   * @access public
-   * @return string
-   */
-  public function getDate() {
-    return $this->date;
-  }
-
-  /**
-   * Get the database's type (1-4)
+   * Get the database's package (1-4)
    *
    * @access public
    * @return int
    */
-  public function getType() {
+  public function getPackageVersion() {
     return $this->type + 1;
   }
 
@@ -1204,6 +1194,62 @@ class Database {
   }
 
   /**
+   *  Return -1, 0, 1, 2
+  */
+  public function isProxy($ip) {
+    return self::lookup($ip, self::IS_PROXY);
+  }
+
+  /*
+   * Return string
+  */
+  public function getCountryShort($ip) {
+    return self::lookup($ip, self::COUNTRY_CODE);
+  }
+
+  /*
+   * Return string
+  */
+  public function getCountryLong($ip) {
+    return self::lookup($ip, self::COUNTRY_NAME);
+  }
+
+  /*
+   * Return string
+  */
+  public function getRegion($ip) {
+    return self::lookup($ip, self::REGION_NAME);
+  }
+
+  /*
+   * Return string
+  */
+  public function getCity($ip) {
+    return self::lookup($ip, self::CITY_NAME);
+  }
+
+  /*
+   * Return string
+  */
+  public function getISP($ip) {
+    return self::lookup($ip, self::ISP);
+  }
+
+  /*
+   * Return string
+  */
+  public function getProxyType($ip) {
+    return self::lookup($ip, self::PROXY_TYPE);
+  }
+
+  /*
+   * Return array
+  */
+  public function getAll($ip) {
+    return self::lookup($ip, self::ALL);
+  }
+
+  /**
    * This function will look the given IP address up in the database and return the result(s) asked for
    *
    * If a single, SINGULAR, field is specified, only its mapped value is returned.
@@ -1211,13 +1257,13 @@ class Database {
    * array whith the returned singular field names as keys and their corresponding
    * values is returned.
    *
-   * @access public
+   * @access protected
    * @param string $ip  IP address to look up
    * @param int|array $fields  Field(s) to return
    * @param boolean $asNamed  Whether to return an associative array instead
    * @return mixed|array|boolean
    */
-  public function lookup($ip, $fields = null, $asNamed = true) {
+  protected function lookup($ip, $fields = null, $asNamed = true) {
     // extract IP version and number
     list($ipVersion, $ipNumber) = self::ipVersionAndNumber($ip);
     // perform the binary search proper (if the IP address was invalid, binSearch will return false)

@@ -23,7 +23,7 @@ $db = new \IP2Proxy\Database('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CIT
 To start lookup result from database, use the following codes:
 
 ```
-$records = $db->lookup('1.0.241.135', \IP2Proxy\Database::ALL);
+$records = $db->getAll('1.0.241.135');
 ```
 
 Results are returned in array.
