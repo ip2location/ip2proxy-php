@@ -32,7 +32,7 @@ class Database {
    *
    * @var string
    */
-  const VERSION = '1.1.0';
+  const VERSION = '1.1.1';
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,11 +452,25 @@ class Database {
    * Constructor
    *
    * @access public
+   */
+  public function __construct() {
+  }
+
+  /**
+   * Destructor
+   *
+   * @access public
+   */
+  public function __destruct() {
+  }
+
+  /**
+   * @access public
    * @param string $file  Filename of the BIN database to load
    * @param int $mode  Caching mode (one of FILE_IO, MEMORY_CACHE, or SHARED_MEMORY)
    * @throws \Exception
    */
-  public function __construct($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL) {
+  public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL) {
     // find the referred file and its size
     $rfile = self::findFile($file);
     $size  = filesize($rfile);
@@ -569,11 +583,11 @@ class Database {
   }
 
   /**
-   * Destructor
+   * Close
    *
    * @access public
    */
-  public function __destruct() {
+  public function close() {
     switch ($this->mode) {
       case self::FILE_IO:
         // free the file pointer
@@ -595,12 +609,11 @@ class Database {
   /**
    * Tear down a shared memory segment created for the given file
    *
-   * @access public
-   * @static
+   * @access protected
    * @param string $file  Filename of the BIN database whise segment must be deleted
    * @throws \Exception
    */
-  public static function shmTeardown($file) {
+  protected function shmTeardown($file) {
     // verify the shmop extension is loaded
     if (!extension_loaded('shmop')) {
       throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
@@ -1159,11 +1172,11 @@ class Database {
   /**
    * Return this database's available fields
    *
-   * @access public
+   * @access protected
    * @param boolean $asNames  Whether to return the mapped names intead of numbered constants
    * @return array
    */
-  public function getFields($asNames = false) {
+  protected function getFields($asNames = false) {
     $result = array_keys(array_filter(self::$columns, function ($field) {
       return 0 !== $field[$this->type];
     }));

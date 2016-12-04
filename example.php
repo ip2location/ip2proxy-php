@@ -1,7 +1,8 @@
 <?php
 require 'class.IP2Proxy.php';
 
-$db = new \IP2Proxy\Database('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db = new \IP2Proxy\Database();
+$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 $countryCode = $db->getCountryShort('1.0.241.135');
 echo '<p><strong>Country Code: </strong>' . $countryCode . '</p>';
@@ -29,3 +30,5 @@ $records = $db->getAll('1.0.241.135');
 echo '<pre>';
 print_r($records);
 echo '</pre>';
+
+$db->close();
