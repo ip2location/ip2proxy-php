@@ -1,12 +1,11 @@
-### IP2Proxy PHP Module
+# IP2Proxy PHP Module
 
-This is the PHP module to lookup IP2Proxy databases from https://www.ip2location.com/proxy-database
+This module allows user to query an IP address if it was being used as open proxy, web proxy, VPN anonymizer and TOR exits. It lookup the proxy IP address from **IP2Location BIN Data** file. This data file can be downloaded at
 
-**IP2Proxy Database** contains IP addresses which are used as VPN anonymizer, open proxies, web proxies and Tor exits. The database includes records for all public IPv4 addresses.
+* Free IP2Proxy BIN Data: http://lite.ip2location.com
+* Commercial IP2Proxy BIN Data: http://www.ip2location.com/proxy-database
 
-
-
-#### Usage
+## Usage
 
 Open and read IP2Proxy binary database. There are 3 modes:
 
@@ -51,6 +50,5 @@ echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 echo '<p><strong>Is Proxy: </strong>' . $records['isProxy'] . '</p>';
 echo '<p><strong>ISP: </strong>' . $records['isp'] . '</p>';
 ```
-
 
 
