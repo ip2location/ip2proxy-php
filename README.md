@@ -15,7 +15,7 @@ Below are the methods supported in this class.
 |getPackageVersion|Get the package version (1 to 4 for PX1 to PX4 respectively).|
 |getModuleVersion|Get the module version.|
 |getDatabaseVersion|Get the database version.|
-|isProxy|Check wether if an IP address was a proxy. Returned value:<ul><li>-1 : errors</li><li>0 : not a proxy</li><li>1 : a proxy</li><li>2 : a data center IP address</li></ul>|
+|isProxy|Check whether if an IP address was a proxy. Returned value:<ul><li>-1 : errors</li><li>0 : not a proxy</li><li>1 : a proxy</li><li>2 : a data center IP address</li></ul>|
 |getAll|Return the proxy information in array.|
 |getProxyType|Return the proxy type. Please visit <a href="https://www.ip2location.com/databases/px4-ip-proxytype-country-region-city-isp" target="_blank">IP2Location</a> for the list of proxy types supported|
 |getCountryShort|Return the ISO3166-1 country code (2-digits) of the proxy.|
