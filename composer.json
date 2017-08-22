@@ -1,10 +1,10 @@
 {
 	"name": "ip2location/ip2proxy-php",
 	"type": "library",
-	"description": "A PHP module to lookup for Proxy/VPN IP address from IP2Proxy database.",
-	"keywords": ["geolocation", "detect vpn", "ip to vpn"],
+	"description": "PHP module to check if an IP address was being used as open proxy, web proxy, VPN anonymizer and TOR exits.",
+	"keywords": ["geolocation", "detect vpn", "ip to vpn", "ip2proxy", "tor exits", "open proxy", "web proxy"],
 	"homepage": "http://www.ip2location.com/",
-	"license": "GPL",
+	"license": "LGPL-3.0",
 	"authors": [
 		{
 			"name": "IP2Location",
