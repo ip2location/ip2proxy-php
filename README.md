@@ -35,7 +35,8 @@ Open and read IP2Proxy binary database. There are 3 modes:
 ```
 require 'class.IP2Proxy.php';
 
-$db = new \IP2Proxy\Database('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db = new \IP2Proxy\Database();
+$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 ```
 
 To start lookup result from database, use the following codes:
