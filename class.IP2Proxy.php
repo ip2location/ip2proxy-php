@@ -32,7 +32,7 @@ class Database {
    *
    * @var string
    */
-  const VERSION = '1.1.1';
+  const VERSION = '1.1.2';
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +220,13 @@ class Database {
    * @var int
    */
   const EXCEPTION_NO_PATH = 10009;
+
+  /**
+   * BCMath extension not installed
+   *
+   * @var int
+   */
+  const EXCEPTION_BCMATH_NOT_INSTALLED = 10010;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  Caching method constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,6 +478,10 @@ class Database {
    * @throws \Exception
    */
   public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL) {
+	if (!function_exists('bcadd')) {
+      throw new \Exception(__CLASS__ . ": BCMath extension is not installed.", self::EXCEPTION_BCMATH_NOT_INSTALLED);
+	}
+
     // find the referred file and its size
     $rfile = self::findFile($file);
     $size  = filesize($rfile);
