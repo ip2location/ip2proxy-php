@@ -50,7 +50,7 @@ class Database {
    *
    * @var string
    */
-  const FIELD_NOT_KNOWN = 'This parameter is inexistent. Please verify.';
+  const FIELD_NOT_KNOWN = 'This parameter does not exists. Please verify.';
 
   /**
    * Invalid IP address message
