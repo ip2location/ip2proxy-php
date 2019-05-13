@@ -2,7 +2,7 @@
 require 'class.IP2Proxy.php';
 
 $db = new \IP2Proxy\Database();
-$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 $countryCode = $db->getCountryShort('1.0.241.135');
 echo '<p><strong>Country Code: </strong>' . $countryCode . '</p>';
@@ -24,6 +24,21 @@ echo '<p><strong>Proxy Type: </strong>' . $proxyType . '</p>';
 
 $isProxy = $db->isProxy('1.0.241.135');
 echo '<p><strong>Is Proxy: </strong>' . $isProxy . '</p>';
+
+$domain = $db->getDomain('1.0.241.135');
+echo '<p><strong>Domain: </strong>' . $domain . '</p>';
+
+$usageType = $db->getUsageType('1.0.241.135');
+echo '<p><strong>Usage Type: </strong>' . $usageType . '</p>';
+
+$asn = $db->getASN('1.0.241.135');
+echo '<p><strong>ASN: </strong>' . $asn . '</p>';
+
+$as = $db->getAS('1.0.241.135');
+echo '<p><strong>AS: </strong>' . $as . '</p>';
+
+$lastSeen = $db->getLastSeen('1.0.241.135');
+echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
 
 $records = $db->getAll('1.0.241.135');
 

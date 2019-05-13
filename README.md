@@ -25,6 +25,11 @@ Below are the methods supported in this class.
 |getRegion|Return the ISO3166-2 region name of the proxy. Please visit <a href="https://www.ip2location.com/free/iso3166-2" target="_blank">ISO3166-2 Subdivision Code</a> for the information of ISO3166-2 supported|
 |getCity|Return the city name of the proxy.|
 |getISP|Return the ISP name of the proxy.|
+|getDomain|Internet domain name associated with IP address range.|
+|getUsageType|Usage type classification of ISP or company. Refer to usage type reference below.|
+|getASN|Autonomous system number (ASN).|
+|getAS|Autonomous system (AS) name.|
+|getLastSeen|Proxy last seen in days.|
 
 ## Usage
 
@@ -38,7 +43,7 @@ Open and read IP2Proxy binary database. There are 3 modes:
 require 'class.IP2Proxy.php';
 
 $db = new \IP2Proxy\Database();
-$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 ```
 
 To start lookup result from database, use the following codes:
@@ -49,7 +54,7 @@ $records = $db->getAll('1.0.241.135');
 
 Results are returned in array.
 
-```
+```php
 echo '<p><strong>IP Address: </strong>' . $records['ipAddress'] . '</p>';
 echo '<p><strong>IP Number: </strong>' . $records['ipNumber'] . '</p>';
 echo '<p><strong>IP Version: </strong>' . $records['ipVersion'] . '</p>';
@@ -71,6 +76,38 @@ echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 */
 echo '<p><strong>Is Proxy: </strong>' . $records['isProxy'] . '</p>';
 echo '<p><strong>ISP: </strong>' . $records['isp'] . '</p>';
+
+$domain = $db->getDomain('1.0.241.135');
+echo '<p><strong>Domain: </strong>' . $domain . '</p>';
+
+$usageType = $db->getUsageType('1.0.241.135');
+echo '<p><strong>Usage Type: </strong>' . $usageType . '</p>';
+
+$asn = $db->getASN('1.0.241.135');
+echo '<p><strong>ASN: </strong>' . $asn . '</p>';
+
+$as = $db->getAS('1.0.241.135');
+echo '<p><strong>AS: </strong>' . $as . '</p>';
+
+$lastSeen = $db->getLastSeen('1.0.241.135');
+echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
 ```
 
 
+
+# Reference
+
+### Usage Type
+
+- (COM) Commercial
+- (ORG) Organization
+- (GOV) Government
+- (MIL) Military
+- (EDU) University/College/School
+- (LIB) Library
+- (CDN) Content Delivery Network
+- (ISP) Fixed Line ISP
+- (MOB) Mobile ISP
+- (DCH) Data Center/Web Hosting/Transit
+- (SES) Search Engine Spider
+- (RSV) Reserved
