@@ -31,7 +31,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	const VERSION = '2.0.0';
+	const VERSION = '2.0.1';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -969,7 +969,7 @@ class Database
 				} else {
 					$proxyType = $this->readProxyType($pointer);
 
-					$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH') ? 2 : 1);
+					$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES') ? 2 : 1);
 
 					if (strlen($proxyType) > 3) {
 						$results[self::IS_PROXY] = -1;
