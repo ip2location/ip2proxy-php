@@ -31,7 +31,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	const VERSION = '2.0.1';
+	public const VERSION = '2.0.1';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,21 +42,21 @@ class Database
 	 *
 	 * @var string
 	 */
-	const FIELD_NOT_SUPPORTED = 'NOT SUPPORTED';
+	public const FIELD_NOT_SUPPORTED = 'NOT SUPPORTED';
 
 	/**
 	 * Unknown field message.
 	 *
 	 * @var string
 	 */
-	const FIELD_NOT_KNOWN = 'This parameter does not exists. Please verify.';
+	public const FIELD_NOT_KNOWN = 'This parameter does not exists. Please verify.';
 
 	/**
 	 * Invalid IP address message.
 	 *
 	 * @var string
 	 */
-	const INVALID_IP_ADDRESS = 'INVALID IP ADDRESS';
+	public const INVALID_IP_ADDRESS = 'INVALID IP ADDRESS';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Field selection constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,119 +67,119 @@ class Database
 	 *
 	 * @var int
 	 */
-	const COUNTRY_CODE = 1;
+	public const COUNTRY_CODE = 1;
 
 	/**
 	 * Country name.
 	 *
 	 * @var int
 	 */
-	const COUNTRY_NAME = 2;
+	public const COUNTRY_NAME = 2;
 
 	/**
 	 * Region name.
 	 *
 	 * @var int
 	 */
-	const REGION_NAME = 3;
+	public const REGION_NAME = 3;
 
 	/**
 	 * City name.
 	 *
 	 * @var int
 	 */
-	const CITY_NAME = 4;
+	public const CITY_NAME = 4;
 
 	/**
 	 * ISP name.
 	 *
 	 * @var int
 	 */
-	const ISP = 5;
+	public const ISP = 5;
 
 	/**
 	 * Is proxy.
 	 *
 	 * @var int
 	 */
-	const IS_PROXY = 6;
+	public const IS_PROXY = 6;
 
 	/**
 	 * Proxy type.
 	 *
 	 * @var int
 	 */
-	const PROXY_TYPE = 7;
+	public const PROXY_TYPE = 7;
 
 	/**
 	 * Domain.
 	 *
 	 * @var int
 	 */
-	const DOMAIN = 8;
+	public const DOMAIN = 8;
 
 	/**
 	 * Usage type.
 	 *
 	 * @var int
 	 */
-	const USAGE_TYPE = 9;
+	public const USAGE_TYPE = 9;
 
 	/**
 	 * ASN.
 	 *
 	 * @var int
 	 */
-	const ASN = 10;
+	public const ASN = 10;
 
 	/**
 	 * AS.
 	 *
 	 * @var int
 	 */
-	const _AS = 11;
+	public const _AS = 11;
 
 	/**
 	 * Last seen.
 	 *
 	 * @var int
 	 */
-	const LAST_SEEN = 12;
+	public const LAST_SEEN = 12;
 
 	/**
 	 * Country name and code.
 	 *
 	 * @var int
 	 */
-	const COUNTRY = 101;
+	public const COUNTRY = 101;
 
 	/**
 	 * All fields at once.
 	 *
 	 * @var int
 	 */
-	const ALL = 1001;
+	public const ALL = 1001;
 
 	/**
 	 * Include the IP address of the looked up IP address.
 	 *
 	 * @var int
 	 */
-	const IP_ADDRESS = 1002;
+	public const IP_ADDRESS = 1002;
 
 	/**
 	 * Include the IP version of the looked up IP address.
 	 *
 	 * @var int
 	 */
-	const IP_VERSION = 1003;
+	public const IP_VERSION = 1003;
 
 	/**
 	 * Include the IP number of the looked up IP address.
 	 *
 	 * @var int
 	 */
-	const IP_NUMBER = 1004;
+	public const IP_NUMBER = 1004;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Exception code constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,77 +190,77 @@ class Database
 	 *
 	 * @var int
 	 */
-	const EXCEPTION = 10000;
+	public const EXCEPTION = 10000;
 
 	/**
 	 * No shmop extension found.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_NO_SHMOP = 10001;
+	public const EXCEPTION_NO_SHMOP = 10001;
 
 	/**
 	 * Failed to open shmop memory segment for reading.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_SHMOP_READING_FAILED = 10002;
+	public const EXCEPTION_SHMOP_READING_FAILED = 10002;
 
 	/**
 	 * Failed to open shmop memory segment for writing.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_SHMOP_WRITING_FAILED = 10003;
+	public const EXCEPTION_SHMOP_WRITING_FAILED = 10003;
 
 	/**
 	 * Failed to create shmop memory segment.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_SHMOP_CREATE_FAILED = 10004;
+	public const EXCEPTION_SHMOP_CREATE_FAILED = 10004;
 
 	/**
 	 * The specified database file was not found.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_DBFILE_NOT_FOUND = 10005;
+	public const EXCEPTION_DBFILE_NOT_FOUND = 10005;
 
 	/**
 	 * Not enough memory to load database file.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_NO_MEMORY = 10006;
+	public const EXCEPTION_NO_MEMORY = 10006;
 
 	/**
 	 * No candidate databse files found.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_NO_CANDIDATES = 10007;
+	public const EXCEPTION_NO_CANDIDATES = 10007;
 
 	/**
 	 * Failed to open database file.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_FILE_OPEN_FAILED = 10008;
+	public const EXCEPTION_FILE_OPEN_FAILED = 10008;
 
 	/**
 	 * Failed to determine the current path.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_NO_PATH = 10009;
+	public const EXCEPTION_NO_PATH = 10009;
 
 	/**
 	 * BCMath extension not installed.
 	 *
 	 * @var int
 	 */
-	const EXCEPTION_BCMATH_NOT_INSTALLED = 10010;
+	public const EXCEPTION_BCMATH_NOT_INSTALLED = 10010;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Caching method constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,21 +271,21 @@ class Database
 	 *
 	 * @var int
 	 */
-	const FILE_IO = 100001;
+	public const FILE_IO = 100001;
 
 	/**
 	 * Read the whole database into a variable for caching.
 	 *
 	 * @var int
 	 */
-	const MEMORY_CACHE = 100002;
+	public const MEMORY_CACHE = 100002;
 
 	/**
 	 * Use shared memory objects for caching.
 	 *
 	 * @var int
 	 */
-	const SHARED_MEMORY = 100003;
+	public const SHARED_MEMORY = 100003;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Shared memory constants  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,14 +296,14 @@ class Database
 	 *
 	 * @var int
 	 */
-	const SHM_PERMS = 0600;
+	public const SHM_PERMS = 0600;
 
 	/**
 	 * Number of bytes to read/write at a time in order to load the shared memory cache (512k).
 	 *
 	 * @var int
 	 */
-	const SHM_CHUNK_SIZE = 524288;
+	public const SHM_CHUNK_SIZE = 524288;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Static data  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +520,7 @@ class Database
 	 */
 	public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL)
 	{
-		if (!function_exists('bcadd')) {
+		if (!\function_exists('bcadd')) {
 			throw new \Exception(__CLASS__ . ': BCMath extension is not installed.', self::EXCEPTION_BCMATH_NOT_INSTALLED);
 		}
 
@@ -532,7 +532,7 @@ class Database
 		switch ($mode) {
 		case self::SHARED_MEMORY:
 		// verify the shmop extension is loaded
-		if (!extension_loaded('shmop')) {
+		if (!\extension_loaded('shmop')) {
 			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
 		}
 
@@ -548,7 +548,7 @@ class Database
 		$this->resource = @shmop_open($shmKey, 'a', 0, 0);
 		if ($this->resource === false) {
 			// the segment did not exist, create it and load the database into it
-			$fp = fopen($rfile, 'rb');
+			$fp = fopen($rfile, 'r');
 			if ($fp === false) {
 				throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
 			}
@@ -579,7 +579,7 @@ class Database
 
 		case self::FILE_IO:
 		$this->mode = self::FILE_IO;
-		$this->resource = @fopen($rfile, 'rb');
+		$this->resource = @fopen($rfile, 'r');
 		if ($this->resource === false) {
 			throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
 		}
@@ -588,7 +588,7 @@ class Database
 		case self::MEMORY_CACHE:
 		$this->mode = self::MEMORY_CACHE;
 		$this->resource = $rfile;
-		if (!array_key_exists($rfile, self::$buffer)) {
+		if (!\array_key_exists($rfile, self::$buffer)) {
 			$limit = self::getMemoryLimit();
 			if ($limit !== false && $size > $limit) {
 				throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
@@ -611,7 +611,7 @@ class Database
 		//     is written, this is the sanest thing to do anyway
 		//
 		if (self::$floatSize === null) {
-			self::$floatSize = strlen(pack('f', M_PI));
+			self::$floatSize = \strlen(pack('f', M_PI));
 		}
 
 		// set default fields to retrieve
@@ -780,7 +780,7 @@ class Database
 	protected function shmTeardown($file)
 	{
 		// verify the shmop extension is loaded
-		if (!extension_loaded('shmop')) {
+		if (!\extension_loaded('shmop')) {
 			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
 		}
 
@@ -859,7 +859,7 @@ class Database
 		// turn fields into an array in case it wasn't already
 		$ifields = (array) $fields;
 		// add fields if needed
-		if (in_array(self::ALL, $ifields)) {
+		if (\in_array(self::ALL, $ifields)) {
 			$ifields[] = self::REGION_NAME;
 			$ifields[] = self::CITY_NAME;
 			$ifields[] = self::ISP;
@@ -963,7 +963,7 @@ class Database
 
 					$results[self::IS_PROXY] = ($countryCode == '-') ? 0 : 1;
 
-					if (strlen($countryCode) > 2) {
+					if (\strlen($countryCode) > 2) {
 						$results[self::IS_PROXY] = -1;
 					}
 				} else {
@@ -971,7 +971,7 @@ class Database
 
 					$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES') ? 2 : 1);
 
-					if (strlen($proxyType) > 3) {
+					if (\strlen($proxyType) > 3) {
 						$results[self::IS_PROXY] = -1;
 					}
 				}
@@ -1040,13 +1040,13 @@ class Database
 		}
 
 		// If we were asked for an array, or we have multiple results to return...
-		if (is_array($fields) || count($results) > 1) {
+		if (\is_array($fields) || \count($results) > 1) {
 			// return array
 			if ($asNamed) {
 				// apply translations if needed
 				$return = [];
 				foreach ($results as $key => $val) {
-					if (array_key_exists($key, static::$names)) {
+					if (\array_key_exists($key, static::$names)) {
 						$return[static::$names[$key]] = $val;
 					} else {
 						$return[$key] = $val;
@@ -1249,6 +1249,17 @@ class Database
 		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 			return [4, sprintf('%u', ip2long($ip))];
 		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+			// 6to4 Address - 2002::/16
+			if (substr($ip, 0, 4) == '2002') {
+				return [4, sprintf('%u', long2ip(gmp_import(inet_pton('::FFFF:' . substr($ip, 5, 9)))))];
+			}
+
+			// Teredo Address - 2001:0::/32
+			if (substr($ip, 0, 9) == '2001:0000') {
+				return [4, sprintf('%u', long2ip(hexdec(bin2hex(~hex2bin(str_replace(':', '', substr($ip, -9)))))))];
+			}
+
+			// Common IPv6 Address
 			$result = 0;
 
 			foreach (str_split(bin2hex(inet_pton($ip)), 8) as $word) {
@@ -1273,11 +1284,11 @@ class Database
 	private static function bcBin2Dec($data)
 	{
 		$parts = [
-	unpack('V', substr($data, 12, 4)),
-	unpack('V', substr($data, 8, 4)),
-	unpack('V', substr($data, 4, 4)),
-	unpack('V', substr($data, 0, 4)),
-  ];
+			unpack('V', substr($data, 12, 4)),
+			unpack('V', substr($data, 8, 4)),
+			unpack('V', substr($data, 4, 4)),
+			unpack('V', substr($data, 0, 4)),
+	  ];
 
 		foreach ($parts as &$part) {
 			if ($part[1] < 0) {
@@ -1408,7 +1419,7 @@ class Database
 			// Deal with invalid IPs
 			$countryCode = self::INVALID_IP_ADDRESS;
 			$countryName = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::COUNTRY_CODE][$this->type]) {
+		} elseif (self::$columns[self::COUNTRY_CODE][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$countryCode = self::FIELD_NOT_SUPPORTED;
 			$countryName = self::FIELD_NOT_SUPPORTED;
@@ -1435,7 +1446,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$regionName = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::REGION_NAME][$this->type]) {
+		} elseif (self::$columns[self::REGION_NAME][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$regionName = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1458,7 +1469,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$cityName = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::CITY_NAME][$this->type]) {
+		} elseif (self::$columns[self::CITY_NAME][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$cityName = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1481,7 +1492,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$isp = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::ISP][$this->type]) {
+		} elseif (self::$columns[self::ISP][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$isp = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1504,7 +1515,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$proxyType = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::PROXY_TYPE][$this->type]) {
+		} elseif (self::$columns[self::PROXY_TYPE][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$proxyType = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1527,7 +1538,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$domain = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::DOMAIN][$this->type]) {
+		} elseif (self::$columns[self::DOMAIN][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$domain = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1550,7 +1561,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$usageType = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::USAGE_TYPE][$this->type]) {
+		} elseif (self::$columns[self::USAGE_TYPE][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$usageType = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1573,7 +1584,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$asn = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::ASN][$this->type]) {
+		} elseif (self::$columns[self::ASN][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$asn = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1596,7 +1607,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$as = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::_AS][$this->type]) {
+		} elseif (self::$columns[self::_AS][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$as = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1619,7 +1630,7 @@ class Database
 		if ($pointer === false) {
 			// Deal with invalid IPs
 			$lastSeen = self::INVALID_IP_ADDRESS;
-		} elseif (0 === self::$columns[self::LAST_SEEN][$this->type]) {
+		} elseif (self::$columns[self::LAST_SEEN][$this->type] === 0) {
 			// If the field is not suported, return accordingly
 			$lastSeen = self::FIELD_NOT_SUPPORTED;
 		} else {
