@@ -93,7 +93,7 @@ $lastSeen = $db->getLastSeen('1.0.241.135');
 echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
 ```
 
-
+Note: if you are getting error such as `Call to undefined function IP2Proxy\gmp_import()`, you probably did not have the module to install or enable in php.ini. You can check your php.ini to make sure that the module has been enabled.
 
 # Reference
 

@@ -31,7 +31,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	public const VERSION = '2.0.1';
+	public const VERSION = '2.1.0';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,6 +481,9 @@ class Database
 	private $year;
 	private $month;
 	private $day;
+	
+	// This variable will be used to hold the raw row of columns's positions
+	private $raw_positions_row; 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Default fields  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -854,6 +857,14 @@ class Database
 		// apply defaults if needed
 		if ($fields === null) {
 			$fields = $this->defaultFields;
+		}
+		
+		// Get the entire row based on the pointer value.
+		// The length of the row differs based on the IP version.
+		if (4 === $ipVersion) {
+		  $this->raw_positions_row = $this->read($pointer - 1, $this->columnWidth[4] + 4);
+		} elseif (6 === $ipVersion) {
+		  $this->raw_positions_row = $this->read($pointer - 1, $this->columnWidth[6]);
 		}
 
 		// turn fields into an array in case it wasn't already
@@ -1251,7 +1262,7 @@ class Database
 		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 			// 6to4 Address - 2002::/16
 			if (substr($ip, 0, 4) == '2002') {
-				return [4, sprintf('%u', long2ip(gmp_import(inet_pton('::FFFF:' . substr($ip, 5, 9)))))];
+				return [4, sprintf('%u', long2ip(gmp_intval(gmp_import(inet_pton('::FFFF:' . substr($ip, 5, 9))))))];
 			}
 
 			// Teredo Address - 2001:0::/32
@@ -1342,9 +1353,9 @@ class Database
 	 * @return string
 	 */
 	private function readString($pos, $additional = 0)
-	{
-		// Get the actual pointer to the string's head
-		$spos = $this->readWord($pos) + $additional;
+	{		
+		// Get the actual pointer to the string's head by extract from raw row data.
+		$spos = unpack('V', substr($this->raw_positions_row, $pos, 4))[1] + $additional;
 
 		// Read as much as the length (first "string" byte) indicates
 		return $this->read($spos + 1, $this->readByte($spos + 1));
@@ -1427,8 +1438,8 @@ class Database
 			// Read the country code and name (the name shares the country's pointer,
 			// but it must be artificially displaced 3 bytes ahead: 2 for the country code, one
 			// for the country name's length)
-			$countryCode = $this->readString($pointer + self::$columns[self::COUNTRY_CODE][$this->type]);
-			$countryName = $this->readString($pointer + self::$columns[self::COUNTRY_NAME][$this->type], 3);
+			$countryCode = $this->readString(self::$columns[self::COUNTRY_CODE][$this->type]);
+			$countryName = $this->readString(self::$columns[self::COUNTRY_NAME][$this->type], 3);
 		}
 
 		return [$countryName, $countryCode];
@@ -1451,7 +1462,7 @@ class Database
 			$regionName = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the region name
-			$regionName = $this->readString($pointer + self::$columns[self::REGION_NAME][$this->type]);
+			$regionName = $this->readString(self::$columns[self::REGION_NAME][$this->type]);
 		}
 
 		return $regionName;
@@ -1474,7 +1485,7 @@ class Database
 			$cityName = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the city name
-			$cityName = $this->readString($pointer + self::$columns[self::CITY_NAME][$this->type]);
+			$cityName = $this->readString(self::$columns[self::CITY_NAME][$this->type]);
 		}
 
 		return $cityName;
@@ -1497,7 +1508,7 @@ class Database
 			$isp = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read isp name
-			$isp = $this->readString($pointer + self::$columns[self::ISP][$this->type]);
+			$isp = $this->readString(self::$columns[self::ISP][$this->type]);
 		}
 
 		return $isp;
@@ -1520,7 +1531,7 @@ class Database
 			$proxyType = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read proxy type
-			$proxyType = $this->readString($pointer + self::$columns[self::PROXY_TYPE][$this->type]);
+			$proxyType = $this->readString(self::$columns[self::PROXY_TYPE][$this->type]);
 		}
 
 		return $proxyType;
@@ -1543,7 +1554,7 @@ class Database
 			$domain = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
-			$domain = $this->readString($pointer + self::$columns[self::DOMAIN][$this->type]);
+			$domain = $this->readString(self::$columns[self::DOMAIN][$this->type]);
 		}
 
 		return $domain;
@@ -1566,7 +1577,7 @@ class Database
 			$usageType = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
-			$usageType = $this->readString($pointer + self::$columns[self::USAGE_TYPE][$this->type]);
+			$usageType = $this->readString(self::$columns[self::USAGE_TYPE][$this->type]);
 		}
 
 		return $usageType;
@@ -1589,7 +1600,7 @@ class Database
 			$asn = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
-			$asn = $this->readString($pointer + self::$columns[self::ASN][$this->type]);
+			$asn = $this->readString(self::$columns[self::ASN][$this->type]);
 		}
 
 		return $asn;
@@ -1612,7 +1623,7 @@ class Database
 			$as = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
-			$as = $this->readString($pointer + self::$columns[self::_AS][$this->type]);
+			$as = $this->readString(self::$columns[self::_AS][$this->type]);
 		}
 
 		return $as;
@@ -1635,7 +1646,7 @@ class Database
 			$lastSeen = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
-			$lastSeen = $this->readString($pointer + self::$columns[self::LAST_SEEN][$this->type]);
+			$lastSeen = $this->readString(self::$columns[self::LAST_SEEN][$this->type]);
 		}
 
 		return $lastSeen;
