@@ -10,6 +10,10 @@ This module allows user to query an IP address if it was being used as open prox
 ## Methods
 Below are the methods supported in this class.
 
+
+
+### BIN Database Class
+
 |Method Name|Description|
 |---|---|
 |open|Open the IP2Proxy BIN data for lookup. Please see the **Usage** section of the 3 modes supported to load the BIN data file.|
@@ -31,7 +35,21 @@ Below are the methods supported in this class.
 |getAS|Autonomous system (AS) name.|
 |getLastSeen|Proxy last seen in days.|
 
+
+
+### Web Service Class
+
+| Method Name | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX8)</li><li>Use HTTPS or HTTP</li></ol> |
+| lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>proxyType</li><li>isProxy</li></ul>                       |
+| getCredit   | Return remaining credit of the web service account.          |
+
+
+
 ## Usage
+
+### BIN Database
 
 Open and read IP2Proxy binary database. There are 3 modes:
 
@@ -39,7 +57,7 @@ Open and read IP2Proxy binary database. There are 3 modes:
 2. **\IP2Proxy\Database::MEMORY_CACHE** - Caches database into memory for faster lookup. Required high memory.
 3. **\IP2Proxy\Database::SHARED_MEMORY** - Stores whole IP2Proxy database into system memory. Lookup is possible across all applications within the system.  Extremely resources consuming. Do not use this mode if your system do not have enough memory.
 
-```
+```php
 require 'class.IP2Proxy.php';
 
 $db = new \IP2Proxy\Database();
@@ -94,6 +112,38 @@ echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
 ```
 
 Note: if you are getting error such as `Call to undefined function IP2Proxy\gmp_import()`, you probably did not have the module to install or enable in php.ini. You can check your php.ini to make sure that the module has been enabled.
+
+### Web Service API
+
+To lookup by Web service, you will need to sign up for [IP2Proxy Web Service](https://www.ip2location.com/web-service/ip2proxy) to get a API key.
+
+Start your lookup by following codes:
+
+```php
+require 'class.IP2Proxy.php';
+
+// Lookup by Web API
+$ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX8', false);
+
+$results = $ws->lookup('1.0.241.135');
+
+if ($results !== false) {
+    echo '<p><strong>Country Code: </strong>' . $results['countryCode'] . '</p>';
+    echo '<p><strong>Country Name: </strong>' . $results['countryName'] . '</p>';
+    echo '<p><strong>Region: </strong>' . $results['regionName'] . '</p>';
+    echo '<p><strong>City: </strong>' . $results['cityName'] . '</p>';
+    echo '<p><strong>ISP: </strong>' . $results['isp'] . '</p>';
+    echo '<p><strong>Domain: </strong>' . $results['domain'] . '</p>';
+    echo '<p><strong>Usage Type: </strong>' . $results['usageType'] . '</p>';
+    echo '<p><strong>ASN: </strong>' . $results['asn'] . '</p>';
+    echo '<p><strong>AS: </strong>' . $results['as'] . '</p>';
+    echo '<p><strong>Last Seen: </strong>' . $results['lastSeen'] . ' Day(s)</p>';
+    echo '<p><strong>Proxy Type: </strong>' . $results['proxyType'] . '</p>';
+    echo '<p><strong>Is Proxy: </strong>' . $results['isProxy'] . '</p>';
+}
+```
+
+
 
 # Reference
 

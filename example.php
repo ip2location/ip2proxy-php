@@ -1,6 +1,7 @@
 <?php
 require 'class.IP2Proxy.php';
 
+// Lookup by local BIN database
 $db = new \IP2Proxy\Database();
 $db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
@@ -47,3 +48,12 @@ print_r($records);
 echo '</pre>';
 
 $db->close();
+
+// Lookup by Web API
+$ws = new \IP2Proxy\WebService('demo',  'PX8', false);
+
+$results = $ws->lookup('1.0.241.135');
+
+echo '<pre>';
+print_r($results);
+echo '</pre>';
