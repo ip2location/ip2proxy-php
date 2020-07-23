@@ -18,12 +18,12 @@ Below are the methods supported in this class.
 |---|---|
 |open|Open the IP2Proxy BIN data for lookup. Please see the **Usage** section of the 3 modes supported to load the BIN data file.|
 |close|Close and clean up the file pointer.|
-|getPackageVersion|Get the package version (1 to 4 for PX1 to PX4 respectively).|
+|getPackageVersion|Get the package version (1 to 10 for PX1 to PX10 respectively).|
 |getModuleVersion|Get the module version.|
 |getDatabaseVersion|Get the database version.|
 |isProxy|Check whether if an IP address was a proxy. Returned value:<ul><li>-1 : errors</li><li>0 : not a proxy</li><li>1 : a proxy</li><li>2 : a data center IP address</li></ul>|
 |getAll|Return the proxy information in array.|
-|getProxyType|Return the proxy type. Please visit <a href="https://www.ip2location.com/databases/px4-ip-proxytype-country-region-city-isp" target="_blank">IP2Location</a> for the list of proxy types supported|
+|getProxyType|Return the proxy type. Please visit <a href="https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential" target="_blank">IP2Location</a> for the list of proxy types supported|
 |getCountryShort|Return the ISO3166-1 country code (2-digits) of the proxy.|
 |getCountryLong|Return the ISO3166-1 country name of the proxy.|
 |getRegion|Return the ISO3166-2 region name of the proxy. Please visit <a href="https://www.ip2location.com/free/iso3166-2" target="_blank">ISO3166-2 Subdivision Code</a> for the information of ISO3166-2 supported|
@@ -34,6 +34,7 @@ Below are the methods supported in this class.
 |getASN|Autonomous system number (ASN).|
 |getAS|Autonomous system (AS) name.|
 |getLastSeen|Proxy last seen in days.|
+|getThreat|Security threat reported.|
 
 
 
@@ -41,8 +42,8 @@ Below are the methods supported in this class.
 
 | Method Name | Description                                                  |
 | ----------- | ------------------------------------------------------------ |
-| Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX8)</li><li>Use HTTPS or HTTP</li></ol> |
-| lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>proxyType</li><li>isProxy</li></ul>                       |
+| Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX10)</li><li>Use HTTPS or HTTP</li></ol> |
+| lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li></ul> |
 | getCredit   | Return remaining credit of the web service account.          |
 
 
@@ -61,7 +62,7 @@ Open and read IP2Proxy binary database. There are 3 modes:
 require 'class.IP2Proxy.php';
 
 $db = new \IP2Proxy\Database();
-$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 ```
 
 To start lookup result from database, use the following codes:
@@ -82,7 +83,7 @@ echo '<p><strong>State: </strong>' . $records['regionName'] . '</p>';
 echo '<p><strong>City: </strong>' . $records['cityName'] . '</p>';
 
 /*
-  Type of proxy: VPN, TOR, DCH, PUB, WEB
+  Type of proxy: VPN, TOR, DCH, PUB, WEB, RES (RES available in PX10 only)
 */
 echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 
@@ -109,6 +110,9 @@ echo '<p><strong>AS: </strong>' . $as . '</p>';
 
 $lastSeen = $db->getLastSeen('1.0.241.135');
 echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
+
+$threat = $db->getThreat('1.0.241.135');
+echo '<p><strong>Threat: </strong>' . $threat . '</p>';
 ```
 
 Note: if you are getting error such as `Call to undefined function IP2Proxy\gmp_import()`, you probably did not have the module to install or enable in php.ini. You can check your php.ini to make sure that the module has been enabled.
@@ -123,7 +127,7 @@ Start your lookup by following codes:
 require 'class.IP2Proxy.php';
 
 // Lookup by Web API
-$ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX8', false);
+$ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX10', false);
 
 $results = $ws->lookup('1.0.241.135');
 
@@ -139,6 +143,7 @@ if ($results !== false) {
     echo '<p><strong>AS: </strong>' . $results['as'] . '</p>';
     echo '<p><strong>Last Seen: </strong>' . $results['lastSeen'] . ' Day(s)</p>';
     echo '<p><strong>Proxy Type: </strong>' . $results['proxyType'] . '</p>';
+    echo '<p><strong>Threat: </strong>' . $results['threat'] . '</p>';
     echo '<p><strong>Is Proxy: </strong>' . $results['isProxy'] . '</p>';
 }
 ```

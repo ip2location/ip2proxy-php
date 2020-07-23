@@ -31,7 +31,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	public const VERSION = '2.2.0';
+	public const VERSION = '3.0.0';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,6 +145,13 @@ class Database
 	 * @var int
 	 */
 	public const LAST_SEEN = 12;
+
+	/**
+	 * Security threat.
+	 *
+	 * @var int
+	 */
+	public const THREAT = 13;
 
 	/**
 	 * Country name and code.
@@ -320,17 +327,18 @@ class Database
 	 * @var array
 	 */
 	private static $columns = [
-		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16],
-		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20],
-		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24],
-		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8],
-		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28],
-		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32],
-		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36],
-		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40],
-		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44],
+		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12],
+		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12],
+		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16,  16],
+		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20,  20],
+		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24,  24],
+		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8,   8],
+		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28,  28],
+		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32,  32],
+		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36,  36],
+		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40,  40],
+		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44,  44],
+		self::THREAT       => [0,   0,   0,   0,   0,   0,   0,   0,   48,  48],
   ];
 
 	/**
@@ -353,6 +361,7 @@ class Database
 		self::ASN          => 'asn',
 		self::_AS          => 'as',
 		self::LAST_SEEN    => 'lastSeen',
+		self::THREAT       => 'threat',
 		self::IP_ADDRESS   => 'ipAddress',
 		self::IP_VERSION   => 'ipVersion',
 		self::IP_NUMBER    => 'ipNumber',
@@ -365,6 +374,8 @@ class Database
 	 */
 	private static $databases = [
 		// IPv4 databases
+		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
+		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE',
@@ -375,6 +386,8 @@ class Database
 		'IP2PROXY-IP-COUNTRY',
 
 		// IPv6 databases
+		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
+		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE',
@@ -483,7 +496,7 @@ class Database
 	private $day;
 
 	// This variable will be used to hold the raw row of columns's positions
-	private $raw_positions_row;
+	private $rawPositionsRow;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Default fields  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -533,79 +546,79 @@ class Database
 
 		// initialize caching backend
 		switch ($mode) {
-		case self::SHARED_MEMORY:
-		// verify the shmop extension is loaded
-		if (!\extension_loaded('shmop')) {
-			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
+			case self::SHARED_MEMORY:
+				// verify the shmop extension is loaded
+				if (!\extension_loaded('shmop')) {
+					throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
+				}
+
+				$limit = self::getMemoryLimit();
+				if ($limit !== false && $size > $limit) {
+					throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
+				}
+
+				$this->mode = self::SHARED_MEMORY;
+				$shmKey = self::getShmKey($rfile);
+
+				// try to open the shared memory segment
+				$this->resource = @shmop_open($shmKey, 'a', 0, 0);
+				if ($this->resource === false) {
+					// the segment did not exist, create it and load the database into it
+					$fp = fopen($rfile, 'r');
+					if ($fp === false) {
+						throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
+					}
+
+					// try to open the memory segment for exclusive access
+					$shmId = @shmop_open($shmKey, 'n', self::SHM_PERMS, $size);
+					if ($shmId === false) {
+						throw new \Exception(__CLASS__ . ": Unable to create shared memory block '{$shmKey}'.", self::EXCEPTION_SHMOP_CREATE_FAILED);
+					}
+
+					// load SHM_CHUNK_SIZE bytes at a time
+					$pointer = 0;
+					while ($pointer < $size) {
+						$buf = fread($fp, self::SHM_CHUNK_SIZE);
+						shmop_write($shmId, $buf, $pointer);
+						$pointer += self::SHM_CHUNK_SIZE;
+					}
+					shmop_close($shmId);
+					fclose($fp);
+
+					// now open the memory segment for readonly access
+					$this->resource = @shmop_open($shmKey, 'a', 0, 0);
+					if ($this->resource === false) {
+						throw new \Exception(__CLASS__ . ": Unable to access shared memory block '{$shmKey}' for reading.", self::EXCEPTION_SHMOP_READING_FAILED);
+					}
+				}
+				break;
+
+			case self::FILE_IO:
+				$this->mode = self::FILE_IO;
+				$this->resource = @fopen($rfile, 'r');
+				if ($this->resource === false) {
+					throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
+				}
+				break;
+
+			case self::MEMORY_CACHE:
+				$this->mode = self::MEMORY_CACHE;
+				$this->resource = $rfile;
+				if (!\array_key_exists($rfile, self::$buffer)) {
+					$limit = self::getMemoryLimit();
+					if ($limit !== false && $size > $limit) {
+						throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
+					}
+
+					self::$buffer[$rfile] = @file_get_contents($rfile);
+					if (self::$buffer[$rfile] === false) {
+						throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
+					}
+				}
+				break;
+
+			default:
 		}
-
-		$limit = self::getMemoryLimit();
-		if ($limit !== false && $size > $limit) {
-			throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
-		}
-
-		$this->mode = self::SHARED_MEMORY;
-		$shmKey = self::getShmKey($rfile);
-
-		// try to open the shared memory segment
-		$this->resource = @shmop_open($shmKey, 'a', 0, 0);
-		if ($this->resource === false) {
-			// the segment did not exist, create it and load the database into it
-			$fp = fopen($rfile, 'r');
-			if ($fp === false) {
-				throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
-			}
-
-			// try to open the memory segment for exclusive access
-			$shmId = @shmop_open($shmKey, 'n', self::SHM_PERMS, $size);
-			if ($shmId === false) {
-				throw new \Exception(__CLASS__ . ": Unable to create shared memory block '{$shmKey}'.", self::EXCEPTION_SHMOP_CREATE_FAILED);
-			}
-
-			// load SHM_CHUNK_SIZE bytes at a time
-			$pointer = 0;
-			while ($pointer < $size) {
-				$buf = fread($fp, self::SHM_CHUNK_SIZE);
-				shmop_write($shmId, $buf, $pointer);
-				$pointer += self::SHM_CHUNK_SIZE;
-			}
-			shmop_close($shmId);
-			fclose($fp);
-
-			// now open the memory segment for readonly access
-			$this->resource = @shmop_open($shmKey, 'a', 0, 0);
-			if ($this->resource === false) {
-				throw new \Exception(__CLASS__ . ": Unable to access shared memory block '{$shmKey}' for reading.", self::EXCEPTION_SHMOP_READING_FAILED);
-			}
-		}
-		break;
-
-		case self::FILE_IO:
-		$this->mode = self::FILE_IO;
-		$this->resource = @fopen($rfile, 'r');
-		if ($this->resource === false) {
-			throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
-		}
-		break;
-
-		case self::MEMORY_CACHE:
-		$this->mode = self::MEMORY_CACHE;
-		$this->resource = $rfile;
-		if (!\array_key_exists($rfile, self::$buffer)) {
-			$limit = self::getMemoryLimit();
-			if ($limit !== false && $size > $limit) {
-				throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
-			}
-
-			self::$buffer[$rfile] = @file_get_contents($rfile);
-			if (self::$buffer[$rfile] === false) {
-				throw new \Exception(__CLASS__ . ": Unable to open file '{$rfile}'.", self::EXCEPTION_FILE_OPEN_FAILED);
-			}
-		}
-		break;
-
-		default:
-	}
 
 		// determine the platform's float size
 		//
@@ -767,6 +780,12 @@ class Database
 		return self::lookup($ip, self::LAST_SEEN);
 	}
 
+	// Return string
+	public function getThreat($ip)
+	{
+		return self::lookup($ip, self::THREAT);
+	}
+
 	// Return array
 	public function getAll($ip)
 	{
@@ -849,12 +868,13 @@ class Database
 	 */
 	protected function lookup($ip, $fields = null, $asNamed = true)
 	{
-		// extract IP version and number
+		// Extract IP version and number
 		list($ipVersion, $ipNumber) = self::ipVersionAndNumber($ip);
-		// perform the binary search proper (if the IP address was invalid, binSearch will return false)
+
+		// Perform the binary search proper (if the IP address was invalid, binSearch will return false)
 		$pointer = $this->binSearch($ipVersion, $ipNumber);
 
-		// apply defaults if needed
+		// Apply defaults if needed
 		if ($fields === null) {
 			$fields = $this->defaultFields;
 		}
@@ -862,14 +882,13 @@ class Database
 		// Get the entire row based on the pointer value.
 		// The length of the row differs based on the IP version.
 		if ($ipVersion === 4) {
-			$this->raw_positions_row = $this->read($pointer - 1, $this->columnWidth[4] + 4);
+			$this->rawPositionsRow = $this->read($pointer - 1, $this->columnWidth[4] + 4);
 		} elseif ($ipVersion === 6) {
-			$this->raw_positions_row = $this->read($pointer - 1, $this->columnWidth[6]);
+			$this->rawPositionsRow = $this->read($pointer - 1, $this->columnWidth[6]);
 		}
 
-		// turn fields into an array in case it wasn't already
 		$ifields = (array) $fields;
-		// add fields if needed
+
 		if (\in_array(self::ALL, $ifields)) {
 			$ifields[] = self::REGION_NAME;
 			$ifields[] = self::CITY_NAME;
@@ -881,180 +900,190 @@ class Database
 			$ifields[] = self::ASN;
 			$ifields[] = self::_AS;
 			$ifields[] = self::LAST_SEEN;
+			$ifields[] = self::THREAT;
 			$ifields[] = self::COUNTRY;
 			$ifields[] = self::IP_ADDRESS;
 			$ifields[] = self::IP_VERSION;
 			$ifields[] = self::IP_NUMBER;
 		}
-		// turn into a uniquely-valued array the fast way
-		// (see: http://php.net/manual/en/function.array-unique.php#77743)
+
 		$afields = array_keys(array_flip($ifields));
-		// sorting them in reverse order warrants that by the time we get to
-		// SINGULAR fields, its MULTIPLE counterparts, if at all present, have
-		// already been retrieved
 		rsort($afields);
 
-		// maintain a list of already retrieved fields to avoid doing it twice
 		$done = [
-		self::COUNTRY_CODE => false,
-		self::COUNTRY_NAME => false,
-		self::REGION_NAME  => false,
-		self::CITY_NAME    => false,
-		self::ISP          => false,
-		self::IS_PROXY     => false,
-		self::PROXY_TYPE   => false,
-		self::DOMAIN       => false,
-		self::USAGE_TYPE   => false,
-		self::ASN          => false,
-		self::_AS          => false,
-		self::LAST_SEEN    => false,
-		self::COUNTRY      => false,
-		self::IP_ADDRESS   => false,
-		self::IP_VERSION   => false,
-		self::IP_NUMBER    => false,
-	];
-		// results are empty to begin with
+			self::COUNTRY_CODE => false,
+			self::COUNTRY_NAME => false,
+			self::REGION_NAME  => false,
+			self::CITY_NAME    => false,
+			self::ISP          => false,
+			self::IS_PROXY     => false,
+			self::PROXY_TYPE   => false,
+			self::DOMAIN       => false,
+			self::USAGE_TYPE   => false,
+			self::ASN          => false,
+			self::_AS          => false,
+			self::LAST_SEEN    => false,
+			self::THREAT       => false,
+			self::COUNTRY      => false,
+			self::IP_ADDRESS   => false,
+			self::IP_VERSION   => false,
+			self::IP_NUMBER    => false,
+		];
+
 		$results = [];
 
-		// treat each field in turn
 		foreach ($afields as $afield) {
 			switch ($afield) {
-		// purposefully ignore self::ALL, we already dealt with it
-		case self::ALL: break;
+				case self::ALL:
+					break;
 
-		case self::COUNTRY:
-			if (!$done[self::COUNTRY]) {
-				list($results[self::COUNTRY_NAME], $results[self::COUNTRY_CODE]) = $this->readCountryNameAndCode($pointer);
-				$done[self::COUNTRY] = true;
-				$done[self::COUNTRY_CODE] = true;
-				$done[self::COUNTRY_NAME] = true;
-			}
-			break;
-		case self::COUNTRY_CODE:
-			if (!$done[self::COUNTRY_CODE]) {
-				$results[self::COUNTRY_CODE] = $this->readCountryNameAndCode($pointer)[1];
-				$done[self::COUNTRY_CODE] = true;
-			}
-			break;
-		case self::COUNTRY_NAME:
-			if (!$done[self::COUNTRY_CODE]) {
-				$results[self::COUNTRY_CODE] = $this->readCountryNameAndCode($pointer)[0];
-				$done[self::COUNTRY_CODE] = true;
-			}
-			break;
-		case self::REGION_NAME:
-			if (!$done[self::REGION_NAME]) {
-				$results[self::REGION_NAME] = $this->readRegionName($pointer);
-				$done[self::REGION_NAME] = true;
-			}
-			break;
-		case self::CITY_NAME:
-			if (!$done[self::CITY_NAME]) {
-				$results[self::CITY_NAME] = $this->readCityName($pointer);
-				$done[self::CITY_NAME] = true;
-			}
-			break;
-		case self::ISP:
-			if (!$done[self::ISP]) {
-				$results[self::ISP] = $this->readIsp($pointer);
-				$done[self::ISP] = true;
-			}
-			break;
-		case self::PROXY_TYPE:
-			if (!$done[self::PROXY_TYPE]) {
-				$results[self::PROXY_TYPE] = $this->readProxyType($pointer);
-				$done[self::PROXY_TYPE] = true;
-			}
-			break;
-		case self::IS_PROXY:
-			if (!$done[self::IS_PROXY]) {
-				// px1
-				if ($this->type == 0) {
-					$countryCode = $this->readCountryNameAndCode($pointer)[1];
-
-					$results[self::IS_PROXY] = ($countryCode == '-') ? 0 : 1;
-
-					if (\strlen($countryCode) > 2) {
-						$results[self::IS_PROXY] = -1;
+				case self::COUNTRY:
+					if (!$done[self::COUNTRY]) {
+						list($results[self::COUNTRY_NAME], $results[self::COUNTRY_CODE]) = $this->readCountryNameAndCode($pointer);
+						$done[self::COUNTRY] = true;
+						$done[self::COUNTRY_CODE] = true;
+						$done[self::COUNTRY_NAME] = true;
 					}
-				} else {
-					$proxyType = $this->readProxyType($pointer);
+					break;
 
-					$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES') ? 2 : 1);
-
-					if (\strlen($proxyType) > 3) {
-						$results[self::IS_PROXY] = -1;
+				case self::COUNTRY_CODE:
+					if (!$done[self::COUNTRY_CODE]) {
+						$results[self::COUNTRY_CODE] = $this->readCountryNameAndCode($pointer)[1];
+						$done[self::COUNTRY_CODE] = true;
 					}
-				}
+					break;
 
-				$done[self::IS_PROXY] = true;
-			}
-			break;
+				case self::COUNTRY_NAME:
+					if (!$done[self::COUNTRY_CODE]) {
+						$results[self::COUNTRY_CODE] = $this->readCountryNameAndCode($pointer)[0];
+						$done[self::COUNTRY_CODE] = true;
+					}
+					break;
 
-		case self::DOMAIN:
-			if (!$done[self::DOMAIN]) {
-				$results[self::DOMAIN] = $this->readDomain($pointer);
-				$done[self::DOMAIN] = true;
-			}
-			break;
+				case self::REGION_NAME:
+					if (!$done[self::REGION_NAME]) {
+						$results[self::REGION_NAME] = $this->readRegionName($pointer);
+						$done[self::REGION_NAME] = true;
+					}
+					break;
 
-		case self::USAGE_TYPE:
-			if (!$done[self::USAGE_TYPE]) {
-				$results[self::USAGE_TYPE] = $this->readUsageType($pointer);
-				$done[self::USAGE_TYPE] = true;
-			}
-			break;
+				case self::CITY_NAME:
+					if (!$done[self::CITY_NAME]) {
+						$results[self::CITY_NAME] = $this->readCityName($pointer);
+						$done[self::CITY_NAME] = true;
+					}
+					break;
 
-		case self::ASN:
-			if (!$done[self::ASN]) {
-				$results[self::ASN] = $this->readAsn($pointer);
-				$done[self::ASN] = true;
-			}
-			break;
+				case self::ISP:
+					if (!$done[self::ISP]) {
+						$results[self::ISP] = $this->readIsp($pointer);
+						$done[self::ISP] = true;
+					}
+					break;
 
-		case self::_AS:
-			if (!$done[self::_AS]) {
-				$results[self::_AS] = $this->readAs($pointer);
-				$done[self::_AS] = true;
-			}
-			break;
+				case self::PROXY_TYPE:
+					if (!$done[self::PROXY_TYPE]) {
+						$results[self::PROXY_TYPE] = $this->readProxyType($pointer);
+						$done[self::PROXY_TYPE] = true;
+					}
+					break;
 
-		case self::LAST_SEEN:
-			if (!$done[self::LAST_SEEN]) {
-				$results[self::LAST_SEEN] = $this->readLastSeen($pointer);
-				$done[self::LAST_SEEN] = true;
-			}
-			break;
+				case self::IS_PROXY:
+					if (!$done[self::IS_PROXY]) {
+						// Special case for PX1
+						if ($this->type == 0) {
+							$countryCode = $this->readCountryNameAndCode($pointer)[1];
 
-		case self::IP_ADDRESS:
-			if (!$done[self::IP_ADDRESS]) {
-				$results[self::IP_ADDRESS] = $ip;
-				$done[self::IP_ADDRESS] = true;
-			}
-			break;
-		case self::IP_VERSION:
-			if (!$done[self::IP_VERSION]) {
-				$results[self::IP_VERSION] = $ipVersion;
-				$done[self::IP_VERSION] = true;
-			}
-			break;
-		case self::IP_NUMBER:
-			if (!$done[self::IP_NUMBER]) {
-				$results[self::IP_NUMBER] = $ipNumber;
-				$done[self::IP_NUMBER] = true;
-			}
-			break;
+							$results[self::IS_PROXY] = ($countryCode == '-') ? 0 : 1;
 
-		default:
-			$results[$afield] = self::FIELD_NOT_KNOWN;
-		}
+							if (\strlen($countryCode) > 2) {
+								$results[self::IS_PROXY] = -1;
+							}
+						} else {
+							$proxyType = $this->readProxyType($pointer);
+
+							$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES') ? 2 : 1);
+
+							if (\strlen($proxyType) > 3) {
+								$results[self::IS_PROXY] = -1;
+							}
+						}
+
+						$done[self::IS_PROXY] = true;
+					}
+					break;
+
+				case self::DOMAIN:
+					if (!$done[self::DOMAIN]) {
+						$results[self::DOMAIN] = $this->readDomain($pointer);
+						$done[self::DOMAIN] = true;
+					}
+					break;
+
+				case self::USAGE_TYPE:
+					if (!$done[self::USAGE_TYPE]) {
+						$results[self::USAGE_TYPE] = $this->readUsageType($pointer);
+						$done[self::USAGE_TYPE] = true;
+					}
+					break;
+
+				case self::ASN:
+					if (!$done[self::ASN]) {
+						$results[self::ASN] = $this->readAsn($pointer);
+						$done[self::ASN] = true;
+					}
+					break;
+
+				case self::_AS:
+					if (!$done[self::_AS]) {
+						$results[self::_AS] = $this->readAs($pointer);
+						$done[self::_AS] = true;
+					}
+					break;
+
+				case self::LAST_SEEN:
+					if (!$done[self::LAST_SEEN]) {
+						$results[self::LAST_SEEN] = $this->readLastSeen($pointer);
+						$done[self::LAST_SEEN] = true;
+					}
+					break;
+
+				case self::THREAT:
+					if (!$done[self::THREAT]) {
+						$results[self::THREAT] = $this->readThreat($pointer);
+						$done[self::THREAT] = true;
+					}
+					break;
+
+				case self::IP_ADDRESS:
+					if (!$done[self::IP_ADDRESS]) {
+						$results[self::IP_ADDRESS] = $ip;
+						$done[self::IP_ADDRESS] = true;
+					}
+					break;
+
+				case self::IP_VERSION:
+					if (!$done[self::IP_VERSION]) {
+						$results[self::IP_VERSION] = $ipVersion;
+						$done[self::IP_VERSION] = true;
+					}
+					break;
+
+				case self::IP_NUMBER:
+					if (!$done[self::IP_NUMBER]) {
+						$results[self::IP_NUMBER] = $ipNumber;
+						$done[self::IP_NUMBER] = true;
+					}
+					break;
+
+				default:
+					$results[$afield] = self::FIELD_NOT_KNOWN;
+			}
 		}
 
 		// If we were asked for an array, or we have multiple results to return...
 		if (\is_array($fields) || \count($results) > 1) {
-			// return array
 			if ($asNamed) {
-				// apply translations if needed
 				$return = [];
 				foreach ($results as $key => $val) {
 					if (\array_key_exists($key, static::$names)) {
@@ -1069,7 +1098,7 @@ class Database
 
 			return $results;
 		}
-		// return a single value
+
 		return array_values($results)[0];
 	}
 
@@ -1217,7 +1246,7 @@ class Database
 	private static function ipBetween($version, $ip, $low, $high)
 	{
 		if ($version === 4) {
-			// Use normal PHP ints
+			// Use normal PHP compares
 			if ($low <= $ip) {
 				if ($ip < $high) {
 					return 0;
@@ -1228,6 +1257,7 @@ class Database
 
 			return -1;
 		}
+
 		// Use BCMath
 		if (bccomp($low, $ip, 0) <= 0) {
 			if (bccomp($ip, $high, 0) <= -1) {
@@ -1260,14 +1290,22 @@ class Database
 		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 			return [4, sprintf('%u', ip2long($ip))];
 		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+			// Expand IPv6 address
+			$ip = implode(':', str_split(unpack('H*0', inet_pton($ip))[0], 4));
+
 			// 6to4 Address - 2002::/16
 			if (substr($ip, 0, 4) == '2002') {
-				return [4, sprintf('%u', long2ip(gmp_intval(gmp_import(inet_pton('::FFFF:' . substr($ip, 5, 9))))))];
+				return [4, (int) (gmp_import(inet_pton($ip)) >> 80) & 4294967295];
 			}
 
 			// Teredo Address - 2001:0::/32
 			if (substr($ip, 0, 9) == '2001:0000') {
-				return [4, sprintf('%u', long2ip(hexdec(bin2hex(~hex2bin(str_replace(':', '', substr($ip, -9)))))))];
+				return [4, (~hexdec(str_replace(':', '', substr($ip, -9))) & 4294967295)];
+			}
+
+			// IPv4 Address
+			if (substr($ip, 0, 9) == '0000:0000') {
+				return [4, hexdec(substr($ip, -9))];
 			}
 
 			// Common IPv6 Address
@@ -1355,7 +1393,7 @@ class Database
 	private function readString($pos, $additional = 0)
 	{
 		// Get the actual pointer to the string's head by extract from raw row data.
-		$spos = unpack('V', substr($this->raw_positions_row, $pos, 4))[1] + $additional;
+		$spos = unpack('V', substr($this->rawPositionsRow, $pos, 4))[1] + $additional;
 
 		// Read as much as the length (first "string" byte) indicates
 		return $this->read($spos + 1, $this->readByte($spos + 1));
@@ -1652,6 +1690,29 @@ class Database
 		return $lastSeen;
 	}
 
+	/**
+	 * High level function to fetch the Threat.
+	 *
+	 * @param int $pointer Position to read from, if false, return self::INVALID_IP_ADDRESS
+	 *
+	 * @return string
+	 */
+	private function readThreat($pointer)
+	{
+		if ($pointer === false) {
+			// Deal with invalid IPs
+			$threat = self::INVALID_IP_ADDRESS;
+		} elseif (self::$columns[self::THREAT][$this->type] === 0) {
+			// If the field is not suported, return accordingly
+			$threat = self::FIELD_NOT_SUPPORTED;
+		} else {
+			// Read the domain
+			$threat = $this->readString(self::$columns[self::THREAT][$this->type]);
+		}
+
+		return $threat;
+	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Binary search and support functions  /////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1688,64 +1749,63 @@ class Database
 	private function binSearch($version, $ipNumber)
 	{
 		if ($version === false) {
-			// unrecognized version
 			return false;
 		}
 
-		// initialize fields
 		$base = $this->ipBase[$version];
 		$offset = $this->offset[$version];
 		$width = $this->columnWidth[$version];
 		$high = $this->ipCount[$version];
 		$low = 0;
 
-		//hjlim
 		$indexBaseStart = $this->indexBaseAddr[$version];
 		if ($indexBaseStart > 0) {
 			$indexPos = 0;
 			switch ($version) {
-		case 4:
-		$ipNum1_2 = (int) ($ipNumber / 65536);
-		$indexPos = $indexBaseStart + ($ipNum1_2 << 3);
+				case 4:
+					$ipNum1_2 = (int) ($ipNumber / 65536);
+					$indexPos = $indexBaseStart + ($ipNum1_2 << 3);
+					break;
 
-		break;
+				case 6:
+					$ipNum1 = (int) (bcdiv($ipNumber, bcpow('2', '112')));
+					$indexPos = $indexBaseStart + ($ipNum1 << 3);
+					break;
 
-		case 6:
-		$ipNum1 = (int) (bcdiv($ipNumber, bcpow('2', '112')));
-		$indexPos = $indexBaseStart + ($ipNum1 << 3);
-
-		break;
-
-		default:
-		return false;
-	}
+				default:
+					return false;
+			}
 
 			$low = $this->readWord($indexPos);
 			$high = $this->readWord($indexPos + 4);
 		}
 
-		// as long as we can narrow down the search...
 		while ($low <= $high) {
 			$mid = (int) ($low + (($high - $low) >> 1));
 
 			// Read IP ranges to get boundaries
-			$ip_from = $this->readIp($version, $base + $width * $mid);
-			$ip_to = $this->readIp($version, $base + $width * ($mid + 1));
+			$ipStart = $this->readIp($version, $base + $width * $mid);
+			$ipEnd = $this->readIp($version, $base + $width * ($mid + 1));
 
-			// determine whether to return, repeat on the lower half, or repeat on the upper half
-			switch (self::ipBetween($version, $ipNumber, $ip_from, $ip_to)) {
-		case 0:
-		return $base + $offset + $mid * $width;
-		case -1:
-			$high = $mid - 1;
-			break;
-		case 1:
-			$low = $mid + 1;
-			break;
-		}
+			if ($ipNumber == 4294967295 || bccomp($ipNumber, '340282366920938463463374607431768211455') == 0) {
+				return $base + $offset + $mid * $width;
+			}
+
+			// Determine whether to return, repeat on the lower half, or repeat on the upper half
+			switch (self::ipBetween($version, $ipNumber, $ipStart, $ipEnd)) {
+				case 0:
+					return $base + $offset + $mid * $width;
+
+				case -1:
+					$high = $mid - 1;
+					break;
+
+				case 1:
+					$low = $mid + 1;
+					break;
+				}
 		}
 
-		// nothing found
 		return false;
 	}
 }
@@ -1780,7 +1840,7 @@ class WebService
 	 * Constructor.
 	 *
 	 * @param string $apiKey  API key of your IP2Proxy web service
-	 * @param string $package Supported IP2Proxy package from PX1 to PX8
+	 * @param string $package Supported IP2Proxy package from PX1 to PX10
 	 * @param bool   $useSsl  Enable or disabled HTTPS connection. HTTP is faster but less secure.
 	 *
 	 * @throws \Exception

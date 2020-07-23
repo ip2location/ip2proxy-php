@@ -3,7 +3,7 @@ require 'class.IP2Proxy.php';
 
 // Lookup by local BIN database
 $db = new \IP2Proxy\Database();
-$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db->open('./data/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 $countryCode = $db->getCountryShort('1.0.241.135');
 echo '<p><strong>Country Code: </strong>' . $countryCode . '</p>';
@@ -41,6 +41,9 @@ echo '<p><strong>AS: </strong>' . $as . '</p>';
 $lastSeen = $db->getLastSeen('1.0.241.135');
 echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
 
+$threat = $db->getThreat('1.0.241.135');
+echo '<p><strong>Threat: </strong>' . $threat . '</p>';
+
 $records = $db->getAll('1.0.241.135');
 
 echo '<pre>';
@@ -50,7 +53,7 @@ echo '</pre>';
 $db->close();
 
 // Lookup by Web API
-$ws = new \IP2Proxy\WebService('demo',  'PX8', false);
+$ws = new \IP2Proxy\WebService('demo',  'PX10', false);
 
 $results = $ws->lookup('1.0.241.135');
 
