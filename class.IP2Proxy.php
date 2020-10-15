@@ -521,7 +521,7 @@ class Database
      *
      * @throws \Exception
      */
-    public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL)
+    public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL, ?string $idDbInMemory = null)
     {
         if (!\function_exists('bcadd')) {
             throw new \Exception(__CLASS__ . ': BCMath extension is not installed.', self::EXCEPTION_BCMATH_NOT_INSTALLED);
@@ -545,7 +545,7 @@ class Database
                 }
 
                 $this->mode = self::SHARED_MEMORY;
-                $shmKey = self::getShmKey($rfile);
+                $shmKey = self::getShmKey($idDbInMemory ?? $rfile);
 
                 // try to open the shared memory segment
                 $this->resource = @shmop_open($shmKey, 'a', 0, 0);
