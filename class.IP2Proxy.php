@@ -1200,7 +1200,7 @@ class Database
     {
         // This will create a shared memory key that deterministically depends only on
         // the current file's path and the BIN file's path
-        return (int)sprintf('%u', self::wrap32(crc32(__FILE__ . ':' . $filename)));
+        return (int)sprintf('%u', self::wrap32(crc32($filename)));
     }
 
     /**
