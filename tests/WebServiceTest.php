@@ -18,12 +18,11 @@ class WebServiceTest extends TestCase
 	{
 		$ws = new \IP2Proxy\WebService('demo', 'PX10', true);
 
-		$records = $ws->lookup('1.0.0.x');
-
-		$this->assertEquals(
-			'INVALID IP ADDRESS',
-			$records['countryCode'],
-		);
+		try {
+			$records = $ws->lookup('1.0.0.x');
+		} catch (\Exception $e) {
+			$this->assertStringContainsString('INVALID IP ADDRESS', $e->getMessage());
+		}
 	}
 
 	public function testCountryCodeIpv4()
