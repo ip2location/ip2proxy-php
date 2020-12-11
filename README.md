@@ -14,27 +14,13 @@ Below are the methods supported in this class.
 
 ### BIN Database Class
 
-|Method Name|Description|
+| Function Name | Description |
 |---|---|
-|open|Open the IP2Proxy BIN data for lookup. Please see the **Usage** section of the 3 modes supported to load the BIN data file.|
-|close|Close and clean up the file pointer.|
-|getPackageVersion|Get the package version (1 to 10 for PX1 to PX10 respectively).|
-|getModuleVersion|Get the module version.|
-|getDatabaseVersion|Get the database version.|
-|isProxy|Check whether if an IP address was a proxy. Returned value:<ul><li>-1 : errors</li><li>0 : not a proxy</li><li>1 : a proxy</li><li>2 : a data center IP address</li></ul>|
-|getAll|Return the proxy information in array.|
-|getProxyType|Return the proxy type. Please visit <a href="https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential" target="_blank">IP2Location</a> for the list of proxy types supported|
-|getCountryShort|Return the ISO3166-1 country code (2-digits) of the proxy.|
-|getCountryLong|Return the ISO3166-1 country name of the proxy.|
-|getRegion|Return the ISO3166-2 region name of the proxy. Please visit <a href="https://www.ip2location.com/free/iso3166-2" target="_blank">ISO3166-2 Subdivision Code</a> for the information of ISO3166-2 supported|
-|getCity|Return the city name of the proxy.|
-|getISP|Return the ISP name of the proxy.|
-|getDomain|Internet domain name associated with IP address range.|
-|getUsageType|Usage type classification of ISP or company. Refer to usage type reference below.|
-|getASN|Autonomous system number (ASN).|
-|getAS|Autonomous system (AS) name.|
-|getLastSeen|Proxy last seen in days.|
-|getThreat|Security threat reported.|
+|Constructor|Expect 2 input parameters:<ol><li>Full path of IP2Proxy BIN data file.</li><li>File Open Mode<ul><li>	SHARED_MEMORY</li><li>MEMORY_CACHE</li><li>FILE_IO</li></ul></li></ol>For SHARED_MEMORY and MEMORY_CACHE, it will require your server to have sufficient memory to hold the BIN data, otherwise it will raise the errors during the object initialization.|
+|**string** getDatabaseVersion()|Return the database's compilation date as a string of the form 'YYYY-MM-DD',|
+|**string** getPackageVersion()|Return the database's type, 1 to 10 respectively for PX1 to PX10. Please visit https://www.ip2location.com/databases/ip2proxy for details.|
+|**string** getModuleVersion()|Return the version of module.|
+|**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
 
 
 
@@ -59,16 +45,15 @@ Open and read IP2Proxy binary database. There are 3 modes:
 3. **\IP2Proxy\Database::SHARED_MEMORY** - Stores whole IP2Proxy database into system memory. Lookup is possible across all applications within the system.  Extremely resources consuming. Do not use this mode if your system do not have enough memory.
 
 ```php
-require 'class.IP2Proxy.php';
+require 'vendor/autoload.php';
 
-$db = new \IP2Proxy\Database();
-$db->open('./samples/IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+$db = new \IP2Proxy\Database('vendor/ip2location/ip2proxy-php/data/PX10.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
 ```
 
 To start lookup result from database, use the following codes:
 
-```
-$records = $db->getAll('1.0.241.135');
+```php
+$records = $db->lookup('1.0.0.8', \IP2PROXY\Database::ALL);
 ```
 
 Results are returned in array.
@@ -95,27 +80,9 @@ echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 */
 echo '<p><strong>Is Proxy: </strong>' . $records['isProxy'] . '</p>';
 echo '<p><strong>ISP: </strong>' . $records['isp'] . '</p>';
-
-$domain = $db->getDomain('1.0.241.135');
-echo '<p><strong>Domain: </strong>' . $domain . '</p>';
-
-$usageType = $db->getUsageType('1.0.241.135');
-echo '<p><strong>Usage Type: </strong>' . $usageType . '</p>';
-
-$asn = $db->getASN('1.0.241.135');
-echo '<p><strong>ASN: </strong>' . $asn . '</p>';
-
-$as = $db->getAS('1.0.241.135');
-echo '<p><strong>AS: </strong>' . $as . '</p>';
-
-$lastSeen = $db->getLastSeen('1.0.241.135');
-echo '<p><strong>Last Seen: </strong>' . $lastSeen . '</p>';
-
-$threat = $db->getThreat('1.0.241.135');
-echo '<p><strong>Threat: </strong>' . $threat . '</p>';
 ```
 
-Note: if you are getting error such as `Call to undefined function IP2Proxy\gmp_import()`, you probably did not have the module to install or enable in php.ini. You can check your php.ini to make sure that the module has been enabled.
+
 
 ### Web Service API
 
@@ -124,7 +91,7 @@ To lookup by Web service, you will need to sign up for [IP2Proxy Web Service](ht
 Start your lookup by following codes:
 
 ```php
-require 'class.IP2Proxy.php';
+require 'vendor/autoload.php';
 
 // Lookup by Web API
 $ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX10', false);
@@ -151,6 +118,20 @@ if ($results !== false) {
 
 
 # Reference
+
+### Proxy Type
+
+| Type | Description                                                  | Anonymity |
+| ---- | ------------------------------------------------------------ | --------- |
+| VPN  | Anonymizing VPN services. These services offer users a publicly accessible VPN for the purpose of hiding their IP address. | High      |
+| TOR  | Tor Exit Nodes. The Tor Project is an open network used by those who wish to maintain anonymity. | High      |
+| DCH  | Hosting Provider, Data Center or Content Delivery  Network. Since hosting providers and data centers can serve to provide  anonymity, the Anonymous IP database flags IP addresses associated with  them. | Low       |
+| PUB  | Public Proxies. These are services which make connection requests on a user's behalf. Proxy server software can be configured by the administrator to listen on some specified port. These differ from  VPNs in that the proxies usually have limited functions compare to VPNs. | High      |
+| WEB  | Web Proxies. These are web services which make web  requests on a user's behalf. These differ from VPNs or Public Proxies in that they are simple web-based proxies rather than operating at the IP  address and other ports level. | High      |
+| SES  | Search Engine Robots. These are services which perform  crawling or scraping to a website, such as, the search engine spider or  bots engine. | Low       |
+| RES  | Residential proxies. These services offer users proxy  connections through residential ISP with or without consents of peers to share their idle resources. Only available with PX10 | Medium    |
+
+
 
 ### Usage Type
 

@@ -1,24 +1,5 @@
 <?php
 
-/*
- * Copyright (C) 2005-2020 IP2Location.com
- * All Rights Reserved
- *
- * This library is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 namespace IP2Proxy;
 
 /**
@@ -31,7 +12,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	public const VERSION = '3.0.0';
+	public const VERSION = '3.1.0';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,42 +480,18 @@ class Database
 	private $rawPositionsRow;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  Default fields  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Default fields to return during lookup.
-	 *
-	 * @var array|int
-	 */
-	private $defaultFields = self::ALL;
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Administrative public interface  /////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Constructor.
-	 */
-	public function __construct()
-	{
-	}
-
-	/**
-	 * Destructor.
-	 */
-	public function __destruct()
-	{
-	}
-
-	/**
-	 * @param string $file          Filename of the BIN database to load
-	 * @param int    $mode          Caching mode (one of FILE_IO, MEMORY_CACHE, or SHARED_MEMORY)
-	 * @param mixed  $defaultFields
+	 *
+	 * @param string $file Filename of the BIN database to load
+	 * @param int    $mode Caching mode (one of FILE_IO, MEMORY_CACHE, or SHARED_MEMORY)
 	 *
 	 * @throws \Exception
 	 */
-	public function open($file = null, $mode = self::FILE_IO, $defaultFields = self::ALL)
+	public function __construct($file = null, $mode = self::FILE_IO)
 	{
 		if (!\function_exists('bcadd')) {
 			throw new \Exception(__CLASS__ . ': BCMath extension is not installed.', self::EXCEPTION_BCMATH_NOT_INSTALLED);
@@ -630,9 +587,6 @@ class Database
 			self::$floatSize = \strlen(pack('f', M_PI));
 		}
 
-		// set default fields to retrieve
-		$this->defaultFields = $defaultFields;
-
 		// extract database metadata
 		$this->type = $this->readByte(1) - 1;
 		$this->columnWidth[4] = $this->readByte(2) * 4;
@@ -652,26 +606,34 @@ class Database
 	}
 
 	/**
+	 * Destructor.
+	 */
+	public function __destruct()
+	{
+		self::close();
+	}
+
+	/**
 	 * Close.
 	 */
 	public function close()
 	{
 		switch ($this->mode) {
-		case self::FILE_IO:
-		// free the file pointer
-		if ($this->resource !== false) {
-			fclose($this->resource);
-			$this->resource = false;
+			case self::FILE_IO:
+			// free the file pointer
+			if ($this->resource !== false) {
+				fclose($this->resource);
+				$this->resource = false;
+			}
+			break;
+			case self::SHARED_MEMORY:
+			// detach from the memory segment
+			if ($this->resource !== false) {
+				shmop_close($this->resource);
+				$this->resource = false;
+			}
+			break;
 		}
-		break;
-		case self::SHARED_MEMORY:
-		// detach from the memory segment
-		if ($this->resource !== false) {
-			shmop_close($this->resource);
-			$this->resource = false;
-		}
-		break;
-	}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -705,154 +667,6 @@ class Database
 	}
 
 	/**
-	 *  Return -1, 0, 1, 2.
-	 *
-	 * @param mixed $ip
-	 */
-	public function isProxy($ip)
-	{
-		return self::lookup($ip, self::IS_PROXY);
-	}
-
-	// Return string
-	public function getCountryShort($ip)
-	{
-		return self::lookup($ip, self::COUNTRY_CODE);
-	}
-
-	// Return string
-	public function getCountryLong($ip)
-	{
-		return self::lookup($ip, self::COUNTRY_NAME);
-	}
-
-	// Return string
-	public function getRegion($ip)
-	{
-		return self::lookup($ip, self::REGION_NAME);
-	}
-
-	// Return string
-	public function getCity($ip)
-	{
-		return self::lookup($ip, self::CITY_NAME);
-	}
-
-	// Return string
-	public function getISP($ip)
-	{
-		return self::lookup($ip, self::ISP);
-	}
-
-	// Return string
-	public function getProxyType($ip)
-	{
-		return self::lookup($ip, self::PROXY_TYPE);
-	}
-
-	// Return string
-	public function getDomain($ip)
-	{
-		return self::lookup($ip, self::DOMAIN);
-	}
-
-	// Return string
-	public function getUsageType($ip)
-	{
-		return self::lookup($ip, self::USAGE_TYPE);
-	}
-
-	// Return string
-	public function getASN($ip)
-	{
-		return self::lookup($ip, self::ASN);
-	}
-
-	// Return string
-	public function getAS($ip)
-	{
-		return self::lookup($ip, self::_AS);
-	}
-
-	// Return string
-	public function getLastSeen($ip)
-	{
-		return self::lookup($ip, self::LAST_SEEN);
-	}
-
-	// Return string
-	public function getThreat($ip)
-	{
-		return self::lookup($ip, self::THREAT);
-	}
-
-	// Return array
-	public function getAll($ip)
-	{
-		return self::lookup($ip, self::ALL);
-	}
-
-	/**
-	 * Tear down a shared memory segment created for the given file.
-	 *
-	 * @param string $file Filename of the BIN database whise segment must be deleted
-	 *
-	 * @throws \Exception
-	 */
-	protected function shmTeardown($file)
-	{
-		// verify the shmop extension is loaded
-		if (!\extension_loaded('shmop')) {
-			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
-		}
-
-		// Get actual file path
-		$rfile = realpath($file);
-
-		// If the file cannot be found, except away
-		if ($rfile === false) {
-			throw new \Exception(__CLASS__ . ": Database file '{$file}' does not seem to exist.", self::EXCEPTION_DBFILE_NOT_FOUND);
-		}
-
-		$shmKey = self::getShmKey($rfile);
-
-		// Try to open the memory segment for writing
-		$shmId = @shmop_open($shmKey, 'w', 0, 0);
-		if ($shmId === false) {
-			throw new \Exception(__CLASS__ . ": Unable to access shared memory block '{$shmKey}' for writing.", self::EXCEPTION_SHMOP_WRITING_FAILED);
-		}
-
-		// Delete and close the descriptor
-		shmop_delete($shmId);
-		shmop_close($shmId);
-	}
-
-	/**
-	 * Return this database's available fields.
-	 *
-	 * @param bool $asNames Whether to return the mapped names intead of numbered constants
-	 *
-	 * @return array
-	 */
-	protected function getFields($asNames = false)
-	{
-		$result = array_keys(array_filter(self::$columns, function ($field) {
-			return $field[$this->type] !== 0;
-		}));
-
-		if ($asNames) {
-			$return = [];
-			foreach ($result as $field) {
-				$return[] = self::$names[$field];
-			}
-
-			return $return;
-		}
-
-		return $result;
-	}
-
-	/**
 	 * This function will look the given IP address up in the database and return the result(s) asked for.
 	 *
 	 * If a single, SINGULAR, field is specified, only its mapped value is returned.
@@ -866,7 +680,7 @@ class Database
 	 *
 	 * @return array|bool|mixed
 	 */
-	protected function lookup($ip, $fields = null, $asNamed = true)
+	public function lookup($ip, $fields = null, $asNamed = true)
 	{
 		// Extract IP version and number
 		list($ipVersion, $ipNumber) = self::ipVersionAndNumber($ip);
@@ -876,7 +690,7 @@ class Database
 
 		// Apply defaults if needed
 		if ($fields === null) {
-			$fields = $this->defaultFields;
+			$fields = self::ALL;
 		}
 
 		// Get the entire row based on the pointer value.
@@ -1100,6 +914,66 @@ class Database
 		}
 
 		return array_values($results)[0];
+	}
+
+	/**
+	 * Tear down a shared memory segment created for the given file.
+	 *
+	 * @param string $file Filename of the BIN database whise segment must be deleted
+	 *
+	 * @throws \Exception
+	 */
+	protected function shmTeardown($file)
+	{
+		// verify the shmop extension is loaded
+		if (!\extension_loaded('shmop')) {
+			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
+		}
+
+		// Get actual file path
+		$rfile = realpath($file);
+
+		// If the file cannot be found, except away
+		if ($rfile === false) {
+			throw new \Exception(__CLASS__ . ": Database file '{$file}' does not seem to exist.", self::EXCEPTION_DBFILE_NOT_FOUND);
+		}
+
+		$shmKey = self::getShmKey($rfile);
+
+		// Try to open the memory segment for writing
+		$shmId = @shmop_open($shmKey, 'w', 0, 0);
+		if ($shmId === false) {
+			throw new \Exception(__CLASS__ . ": Unable to access shared memory block '{$shmKey}' for writing.", self::EXCEPTION_SHMOP_WRITING_FAILED);
+		}
+
+		// Delete and close the descriptor
+		shmop_delete($shmId);
+		shmop_close($shmId);
+	}
+
+	/**
+	 * Return this database's available fields.
+	 *
+	 * @param bool $asNames Whether to return the mapped names intead of numbered constants
+	 *
+	 * @return array
+	 */
+	protected function getFields($asNames = false)
+	{
+		$result = array_keys(array_filter(self::$columns, function ($field) {
+			return $field[$this->type] !== 0;
+		}));
+
+		if ($asNames) {
+			$return = [];
+			foreach ($result as $field) {
+				$return[] = self::$names[$field];
+			}
+
+			return $return;
+		}
+
+		return $result;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1845,7 +1719,7 @@ class WebService
 	 *
 	 * @throws \Exception
 	 */
-	public function __construct($apiKey, $package = 'PX1', $useSsl = false)
+	public function __construct($apiKey, $package = 'PX1', $useSsl = true)
 	{
 		if (!\extension_loaded('curl')) {
 			throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'curl' extension enabled.", self::EXCEPTION_NO_CURL);
@@ -1875,7 +1749,7 @@ class WebService
 	 */
 	public function lookup($ip)
 	{
-		$response = $this->httpRequest('http://api.ip2proxy.com/?' . http_build_query([
+		$response = $this->httpRequest('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
 			'key'     => $this->apiKey,
 			'ip'      => $ip,
 			'package' => $this->package,
@@ -1899,7 +1773,7 @@ class WebService
 	 */
 	public function getCredit()
 	{
-		$response = $this->httpRequest('http://api.ip2proxy.com/?' . http_build_query([
+		$response = $this->httpRequest('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
 			'key'   => $this->apiKey,
 			'check' => true,
 		]));
