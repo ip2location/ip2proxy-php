@@ -12,21 +12,21 @@ class WebService
 	 *
 	 * @var int
 	 */
-	public const EXCEPTION_NO_CURL = 10001;
+	private const EXCEPTION_NO_CURL = 10001;
 
 	/**
 	 * Invalid API key format.
 	 *
 	 * @var int
 	 */
-	public const EXCEPTION_INVALID_API_KEY = 10002;
+	private const EXCEPTION_INVALID_API_KEY = 10002;
 
 	/**
 	 * Web service error.
 	 *
 	 * @var int
 	 */
-	public const EXCEPTION_WEB_SERVICE_ERROR = 10003;
+	private const EXCEPTION_WEB_SERVICE_ERROR = 10003;
 
 	/**
 	 * Constructor.
