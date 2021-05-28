@@ -12,7 +12,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const VERSION = '4.0.1';
+	private const VERSION = '4.1.0';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,25 +23,39 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const FIELD_NOT_SUPPORTED = 'NOT SUPPORTED';
+	public const FIELD_NOT_SUPPORTED = 'This parameter is unavailable in selected .BIN data file. Please upgrade data file.';
 
 	/**
 	 * Unknown field message.
 	 *
 	 * @var string
 	 */
-	private const FIELD_NOT_KNOWN = 'This parameter does not exists. Please verify.';
+	public const FIELD_NOT_KNOWN = 'This parameter does not exists. Please verify.';
 
 	/**
 	 * Invalid IP address message.
 	 *
 	 * @var string
 	 */
-	private const INVALID_IP_ADDRESS = 'INVALID IP ADDRESS';
+	public const INVALID_IP_ADDRESS = 'INVALID IP ADDRESS';
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Field selection constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Maximum IPv4 number.
+	 *
+	 * @var int
+	 */
+	public const MAX_IPV4_RANGE = 4294967295;
+
+	/**
+	 * MAximum IPv6 number.
+	 *
+	 * @var int
+	 */
+	public const MAX_IPV6_RANGE = 340282366920938463463374607431768211455;
 
 	/**
 	 * Country code (ISO 3166-1 Alpha 2).
@@ -133,6 +147,13 @@ class Database
 	 * @var int
 	 */
 	public const THREAT = 13;
+
+	/**
+	 * Provider.
+	 *
+	 * @var int
+	 */
+	public const PROVIDER = 14;
 
 	/**
 	 * Country name and code.
@@ -244,6 +265,13 @@ class Database
 	private const EXCEPTION_NO_PATH = 10009;
 
 	/**
+	 * Invalid BIN database file.
+	 *
+	 * @var int
+	 */
+	public const EXCEPTION_INVALID_BIN_DATABASE = 10010;
+
+	/**
 	 * BCMath extension not installed.
 	 *
 	 * @var int
@@ -306,18 +334,19 @@ class Database
 	 * @var array
 	 */
 	private $columns = [
-		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16,  16],
-		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20,  20],
-		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24,  24],
-		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8,   8],
-		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28,  28],
-		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32,  32],
-		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36,  36],
-		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40,  40],
-		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44,  44],
-		self::THREAT       => [0,   0,   0,   0,   0,   0,   0,   0,   48,  48],
+		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12],
+		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12],
+		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16,  16,  16],
+		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20,  20,  20],
+		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24,  24,  24],
+		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8],
+		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28,  28,  28],
+		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32,  32,  32],
+		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36,  36,  36],
+		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40,  40,  40],
+		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44,  44,  44],
+		self::THREAT       => [0,   0,   0,   0,   0,   0,   0,   0,   48,  48, 48],
+		self::PROVIDER     => [0,   0,   0,   0,   0,   0,   0,   0,    0,   0, 52],
   ];
 
 	/**
@@ -339,6 +368,7 @@ class Database
 		self::_AS          => 'as',
 		self::LAST_SEEN    => 'lastSeen',
 		self::THREAT       => 'threat',
+		self::PROVIDER     => 'provider',
 		self::IP_ADDRESS   => 'ipAddress',
 		self::IP_VERSION   => 'ipVersion',
 		self::IP_NUMBER    => 'ipNumber',
@@ -351,6 +381,7 @@ class Database
 	 */
 	private $databases = [
 		// IPv4 databases
+		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN',
@@ -363,6 +394,7 @@ class Database
 		'IP2PROXY-IP-COUNTRY',
 
 		// IPv6 databases
+		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN',
@@ -465,6 +497,27 @@ class Database
 	private $year;
 	private $month;
 	private $day;
+
+	/**
+	 * Product code.
+	 *
+	 * @var string
+	 */
+	private $productCode;
+
+	/**
+	 * License code.
+	 *
+	 * @var string
+	 */
+	private $licenseCode;
+
+	/**
+	 * Database size.
+	 *
+	 * @var int
+	 */
+	private $databaseSize;
 
 	// This variable will be used to hold the raw row of columns's positions
 	private $rawPositionsRow;
@@ -587,12 +640,23 @@ class Database
 		$this->month = $this->readByte(4);
 		$this->day = $this->readByte(5);
 		$this->date = date('Y-m-d', strtotime("{$this->year}-{$this->month}-{$this->day}"));
+		$this->productCode = $this->readByte(30);
+		$this->licenseCode = $this->readByte(31);
+		$this->databaseSize = $this->readByte(32);
 		$this->ipCount[4] = $this->readWord(6);
 		$this->ipBase[4] = $this->readWord(10);
 		$this->ipCount[6] = $this->readWord(14);
 		$this->ipBase[6] = $this->readWord(18);
 		$this->indexBaseAddr[4] = $this->readWord(22);
 		$this->indexBaseAddr[6] = $this->readWord(26);
+
+		if ($this->productCode == 2) {
+		} else {
+			if ($this->year <= 20 && $this->productCode == 0) {
+			} else {
+				throw new \Exception(__CLASS__ . ': Incorrect IP2Proxy BIN file format. Please make sure that you are using the latest IP2Proxy BIN file.', self::EXCEPTION_INVALID_BIN_DATABASE);
+			}
+		}
 	}
 
 	/**
@@ -705,6 +769,7 @@ class Database
 			$ifields[] = self::_AS;
 			$ifields[] = self::LAST_SEEN;
 			$ifields[] = self::THREAT;
+			$ifields[] = self::PROVIDER;
 			$ifields[] = self::COUNTRY;
 			$ifields[] = self::IP_ADDRESS;
 			$ifields[] = self::IP_VERSION;
@@ -728,6 +793,7 @@ class Database
 			self::_AS          => false,
 			self::LAST_SEEN    => false,
 			self::THREAT       => false,
+			self::PROVIDER     => false,
 			self::COUNTRY      => false,
 			self::IP_ADDRESS   => false,
 			self::IP_VERSION   => false,
@@ -856,6 +922,13 @@ class Database
 					if (!$done[self::THREAT]) {
 						$results[self::THREAT] = $this->readThreat($pointer);
 						$done[self::THREAT] = true;
+					}
+					break;
+
+				case self::PROVIDER:
+					if (!$done[self::PROVIDER]) {
+						$results[self::PROVIDER] = $this->readProvider($pointer);
+						$done[self::PROVIDER] = true;
 					}
 					break;
 
@@ -1137,39 +1210,43 @@ class Database
 	 *
 	 * @return array
 	 */
-	private function ipVersionAndNumber($ip)
+	private static function ipVersionAndNumber($ip)
 	{
 		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-			return [4, sprintf('%u', ip2long($ip))];
+			$number = sprintf('%u', ip2long($ip));
+
+			return [4, ($number == self::MAX_IPV4_RANGE) ? ($number - 1) : $number];
 		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-			// Expand IPv6 address
-			$ip = implode(':', str_split(unpack('H*0', inet_pton($ip))[0], 4));
+			$result = 0;
+			$ip = self::expand($ip);
 
 			// 6to4 Address - 2002::/16
 			if (substr($ip, 0, 4) == '2002') {
-				return [4, (int) (gmp_import(inet_pton($ip)) >> 80) & 4294967295];
+				foreach (str_split(bin2hex(inet_pton($ip)), 8) as $word) {
+					$result = bcadd(bcmul($result, '4294967296', 0), self::wrap32(hexdec($word)), 0);
+				}
+
+				return [4, bcmod(bcdiv($result, bcpow(2, 80)), '4294967296')];
 			}
 
 			// Teredo Address - 2001:0::/32
 			if (substr($ip, 0, 9) == '2001:0000') {
-				return [4, (~hexdec(str_replace(':', '', substr($ip, -9))) & 4294967295)];
+				return [4, hexdec(substr($ip, 10, 4) . substr($ip, 15, 4))];
 			}
-
-			// IPv4 Address
-			if (substr($ip, 0, 9) == '0000:0000') {
-				return [4, hexdec(substr($ip, -9))];
-			}
-
-			// Common IPv6 Address
-			$result = 0;
 
 			foreach (str_split(bin2hex(inet_pton($ip)), 8) as $word) {
 				$result = bcadd(bcmul($result, '4294967296', 0), self::wrap32(hexdec($word)), 0);
 			}
 
+			// IPv4 address in IPv6
+			if (bccomp($result, '281470681743360') >= 0 && bccomp($result, '281474976710655') <= 0) {
+				return [4, bcsub($result, '281470681743360')];
+			}
+
 			return [6, $result];
 		}
-		// Invalid IP address, return falses
+
+		// Invalid IP address, return false
 		return [false, false];
 	}
 
@@ -1182,6 +1259,10 @@ class Database
 	 */
 	private function bcBin2Dec($data)
 	{
+		if (!$data) {
+			return;
+		}
+
 		$parts = [
 			unpack('V', substr($data, 12, 4)),
 			unpack('V', substr($data, 8, 4)),
@@ -1198,6 +1279,22 @@ class Database
 		$result = bcadd(bcadd(bcmul($parts[0][1], bcpow(4294967296, 3)), bcmul($parts[1][1], bcpow(4294967296, 2))), bcadd(bcmul($parts[2][1], 4294967296), $parts[3][1]));
 
 		return $result;
+	}
+
+	/**
+	 * Return the decimal string representing the binary data given.
+	 *
+	 * @static
+	 *
+	 * @param mixed $ipv6
+	 *
+	 * @return string
+	 */
+	private static function expand($ipv6)
+	{
+		$hex = unpack('H*hex', inet_pton($ipv6));
+
+		return substr(preg_replace('/([A-f0-9]{4})/', '$1:', $hex['hex']), 0, -1);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1561,6 +1658,29 @@ class Database
 		}
 
 		return $threat;
+	}
+
+	/**
+	 * High level function to fetch the Provider.
+	 *
+	 * @param int $pointer Position to read from, if false, return self::INVALID_IP_ADDRESS
+	 *
+	 * @return string
+	 */
+	private function readProvider($pointer)
+	{
+		if ($pointer === false) {
+			// Deal with invalid IPs
+			$provider = self::INVALID_IP_ADDRESS;
+		} elseif ($this->columns[self::PROVIDER][$this->type] === 0) {
+			// If the field is not suported, return accordingly
+			$provider = self::FIELD_NOT_SUPPORTED;
+		} else {
+			// Read the domain
+			$provider = $this->readString($this->columns[self::PROVIDER][$this->type]);
+		}
+
+		return $provider;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

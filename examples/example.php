@@ -3,7 +3,7 @@
 require 'vendor/autoload.php';
 
 // Lookup by local BIN database
-$db = new \IP2Proxy\Database('./data/PX10.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
+$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
 
 echo 'Module Version: ' . $db->getModuleVersion() . PHP_EOL. PHP_EOL;
 echo 'Package: PX'. $db->getPackageVersion() . PHP_EOL;
@@ -17,7 +17,7 @@ echo PHP_EOL . PHP_EOL;
 echo 'Web Service' . PHP_EOL;
 
 // Lookup by Web API
-$ws = new \IP2Proxy\WebService('demo', 'PX10', false);
+$ws = new \IP2Proxy\WebService('demo', 'PX11', false);
 
 $results = $ws->lookup('1.0.0.8');
 print_r($results);
