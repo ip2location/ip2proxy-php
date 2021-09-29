@@ -20,7 +20,7 @@ Below are the methods supported in this class.
 |**string** getDatabaseVersion()|Return the database's compilation date as a string of the form 'YYYY-MM-DD',|
 |**string** getPackageVersion()|Return the database's type, 1 to 10 respectively for PX1 to PX10. Please visit https://www.ip2location.com/databases/ip2proxy for details.|
 |**string** getModuleVersion()|Return the version of module.|
-|**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
+|**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
 
 
 
@@ -29,7 +29,7 @@ Below are the methods supported in this class.
 | Method Name | Description                                                  |
 | ----------- | ------------------------------------------------------------ |
 | Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX10)</li><li>Use HTTPS or HTTP</li></ol> |
-| lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li></ul> |
+| lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul> |
 | getCredit   | Return remaining credit of the web service account.          |
 
 
@@ -47,7 +47,7 @@ Open and read IP2Proxy binary database. There are 3 modes:
 ```php
 require 'vendor/autoload.php';
 
-$db = new \IP2Proxy\Database('vendor/ip2location/ip2proxy-php/data/PX10.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
+$db = new \IP2Proxy\Database('vendor/ip2location/ip2proxy-php/data/PX11.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
 ```
 
 To start lookup result from database, use the following codes:
@@ -80,6 +80,13 @@ echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 */
 echo '<p><strong>Is Proxy: </strong>' . $records['isProxy'] . '</p>';
 echo '<p><strong>ISP: </strong>' . $records['isp'] . '</p>';
+echo '<p><strong>Domain: </strong>' . $records['domain'] . '</p>';
+echo '<p><strong>Usage Type: </strong>' . $records['usageType'] . '</p>';
+echo '<p><strong>ASN: </strong>' . $records['asn'] . '</p>';
+echo '<p><strong>AS: </strong>' . $records['as'] . '</p>';
+echo '<p><strong>Last Seen: </strong>' . $records['lastSeen'] . '</p>';
+echo '<p><strong>Threat: </strong>' . $records['threat'] . '</p>';
+echo '<p><strong>Provider: </strong>' . $records['provider'] . '</p>';
 ```
 
 
@@ -111,6 +118,7 @@ if ($results !== false) {
     echo '<p><strong>Last Seen: </strong>' . $results['lastSeen'] . ' Day(s)</p>';
     echo '<p><strong>Proxy Type: </strong>' . $results['proxyType'] . '</p>';
     echo '<p><strong>Threat: </strong>' . $results['threat'] . '</p>';
+    echo '<p><strong>Provider: </strong>' . $results['provider'] . '</p>';
     echo '<p><strong>Is Proxy: </strong>' . $results['isProxy'] . '</p>';
 }
 ```
