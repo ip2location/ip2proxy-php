@@ -18,7 +18,7 @@ Below are the methods supported in this class.
 |---|---|
 |Constructor|Expect 2 input parameters:<ol><li>Full path of IP2Proxy BIN data file.</li><li>File Open Mode<ul><li>	SHARED_MEMORY</li><li>MEMORY_CACHE</li><li>FILE_IO</li></ul></li></ol>For SHARED_MEMORY and MEMORY_CACHE, it will require your server to have sufficient memory to hold the BIN data, otherwise it will raise the errors during the object initialization.|
 |**string** getDatabaseVersion()|Return the database's compilation date as a string of the form 'YYYY-MM-DD',|
-|**string** getPackageVersion()|Return the database's type, 1 to 10 respectively for PX1 to PX10. Please visit https://www.ip2location.com/databases/ip2proxy for details.|
+|**string** getPackageVersion()|Return the database's type, 1 to 10 respectively for PX1 to PX11. Please visit https://www.ip2location.com/databases/ip2proxy for details.|
 |**string** getModuleVersion()|Return the version of module.|
 |**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
 
@@ -68,7 +68,7 @@ echo '<p><strong>State: </strong>' . $records['regionName'] . '</p>';
 echo '<p><strong>City: </strong>' . $records['cityName'] . '</p>';
 
 /*
-  Type of proxy: VPN, TOR, DCH, PUB, WEB, RES (RES available in PX10 only)
+  Type of proxy: VPN, TOR, DCH, PUB, WEB, RES (RES available in PX11 only)
 */
 echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 
