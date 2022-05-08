@@ -1048,7 +1048,7 @@ class Database
 	 *
 	 * @return bool|int
 	 */
-	private function getMemoryLimit()
+	private static function getMemoryLimit()
 	{
 		// Get values if no cache
 		if ($this->memoryLimit === null) {
@@ -1089,7 +1089,7 @@ class Database
 	 *
 	 * @return string
 	 */
-	private function findFile($file = null)
+	private static function findFile($file = null)
 	{
 		if ($file !== null) {
 			// Get actual file path
@@ -1126,7 +1126,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private function wrap8($x)
+	private static function wrap8($x)
 	{
 		return $x + ($x < 0 ? 256 : 0);
 	}
@@ -1138,7 +1138,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private function wrap32($x)
+	private static function wrap32($x)
 	{
 		return $x + ($x < 0 ? 4294967296 : 0);
 	}
@@ -1150,7 +1150,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private function getShmKey($filename)
+	private static function getShmKey($filename)
 	{
 		// This will create a shared memory key that deterministically depends only on
 		// the current file's path and the BIN file's path
@@ -1170,7 +1170,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private function ipBetween($version, $ip, $low, $high)
+	private static function ipBetween($version, $ip, $low, $high)
 	{
 		if ($version === 4) {
 			// Use normal PHP compares
@@ -1257,7 +1257,7 @@ class Database
 	 *
 	 * @return string
 	 */
-	private function bcBin2Dec($data)
+	private static function bcBin2Dec($data)
 	{
 		if (!$data) {
 			return;
