@@ -67,7 +67,7 @@ class WebService
 	 */
 	public function lookup($ip)
 	{
-		$response = $this->httpRequest('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
+		$response = $this->fetch('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
 			'key'     => $this->apiKey,
 			'ip'      => $ip,
 			'package' => $this->package,
@@ -85,13 +85,13 @@ class WebService
 	}
 
 	/**
-	 * Get the remaing credit in your IP2Proxy web service account.
+	 * Get the remaining credit in your IP2Proxy web service account.
 	 *
 	 * @return int
 	 */
 	public function getCredit()
 	{
-		$response = $this->httpRequest('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
+		$response = $this->fetch('http' . (($this->useSsl) ? 's' : '') . '://api.ip2proxy.com/?' . http_build_query([
 			'key'   => $this->apiKey,
 			'check' => true,
 		]));
@@ -114,15 +114,15 @@ class WebService
 	 *
 	 * @return bool|string
 	 */
-	private function httpRequest($url)
+	private function fetch($url)
 	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		curl_setopt($ch, \CURLOPT_URL, $url);
+		curl_setopt($ch, \CURLOPT_FAILONERROR, 1);
+		curl_setopt($ch, \CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, \CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, \CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, \CURLOPT_TIMEOUT, 30);
 
 		$response = curl_exec($ch);
 

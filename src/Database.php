@@ -7,16 +7,9 @@ namespace IP2Proxy;
  */
 class Database
 {
-	/**
-	 * Current module's version.
-	 *
-	 * @var string
-	 */
-	private const VERSION = '4.1.0';
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Error field constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Unsupported field message.
@@ -39,9 +32,9 @@ class Database
 	 */
 	public const INVALID_IP_ADDRESS = 'INVALID IP ADDRESS';
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Field selection constants  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Maximum IPv4 number.
@@ -170,6 +163,44 @@ class Database
 	public const ALL = 1001;
 
 	/**
+	 * Invalid BIN database file.
+	 *
+	 * @var int
+	 */
+	public const EXCEPTION_INVALID_BIN_DATABASE = 10010;
+
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  Caching method constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Directly read from the database file.
+	 *
+	 * @var int
+	 */
+	public const FILE_IO = 100001;
+
+	/**
+	 * Read the whole database into a variable for caching.
+	 *
+	 * @var int
+	 */
+	public const MEMORY_CACHE = 100002;
+
+	/**
+	 * Use shared memory objects for caching.
+	 *
+	 * @var int
+	 */
+	public const SHARED_MEMORY = 100003;
+	/**
+	 * Current module's version.
+	 *
+	 * @var string
+	 */
+	private const VERSION = '4.1.0';
+
+	/**
 	 * Include the IP address of the looked up IP address.
 	 *
 	 * @var int
@@ -190,9 +221,9 @@ class Database
 	 */
 	private const IP_NUMBER = 1004;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Exception code constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Generic exception code.
@@ -244,7 +275,7 @@ class Database
 	private const EXCEPTION_NO_MEMORY = 10006;
 
 	/**
-	 * No candidate databse files found.
+	 * No candidate database files found.
 	 *
 	 * @var int
 	 */
@@ -265,47 +296,15 @@ class Database
 	private const EXCEPTION_NO_PATH = 10009;
 
 	/**
-	 * Invalid BIN database file.
-	 *
-	 * @var int
-	 */
-	public const EXCEPTION_INVALID_BIN_DATABASE = 10010;
-
-	/**
 	 * BCMath extension not installed.
 	 *
 	 * @var int
 	 */
 	private const EXCEPTION_BCMATH_NOT_INSTALLED = 10010;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  Caching method constants  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Directly read from the databse file.
-	 *
-	 * @var int
-	 */
-	public const FILE_IO = 100001;
-
-	/**
-	 * Read the whole database into a variable for caching.
-	 *
-	 * @var int
-	 */
-	public const MEMORY_CACHE = 100002;
-
-	/**
-	 * Use shared memory objects for caching.
-	 *
-	 * @var int
-	 */
-	public const SHARED_MEMORY = 100003;
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Shared memory constants  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Share memory segment's permissions (for creation).
@@ -321,14 +320,14 @@ class Database
 	 */
 	private const SHM_CHUNK_SIZE = 524288;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Static data  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Column offset mapping.
 	 *
-	 * Each entry contains an array mapping databse version (0-3) to offset within a record.
+	 * Each entry contains an array mapping database version (0-3) to offset within a record.
 	 * A value of 0 means the column is not present in the given database version.
 	 *
 	 * @var array
@@ -428,9 +427,9 @@ class Database
 	 */
 	private $memoryLimit = null;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Caching backend controls  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Caching mode to use (one of FILE_IO, MEMORY_CACHE, or SHARED_MEMORY).
@@ -446,9 +445,9 @@ class Database
 	 */
 	private $resource = false;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Database metadata  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Database's compilation date.
@@ -492,7 +491,7 @@ class Database
 	 */
 	private $ipBase = [];
 
-	//hjlim
+	// hjlim
 	private $indexBaseAddr = [];
 	private $year;
 	private $month;
@@ -522,9 +521,9 @@ class Database
 	// This variable will be used to hold the raw row of columns's positions
 	private $rawPositionsRow;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Administrative public interface  /////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Constructor.
@@ -541,7 +540,7 @@ class Database
 		}
 
 		// find the referred file and its size
-		$rfile = self::findFile($file);
+		$rfile = $this->findFile($file);
 		$size = filesize($rfile);
 
 		// initialize caching backend
@@ -552,13 +551,13 @@ class Database
 					throw new \Exception(__CLASS__ . ": Please make sure your PHP setup has the 'shmop' extension enabled.", self::EXCEPTION_NO_SHMOP);
 				}
 
-				$limit = self::getMemoryLimit();
+				$limit = $this->getMemoryLimit();
 				if ($limit !== false && $size > $limit) {
 					throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
 				}
 
 				$this->mode = self::SHARED_MEMORY;
-				$shmKey = self::getShmKey($rfile);
+				$shmKey = $this->getShmKey($rfile);
 
 				// try to open the shared memory segment
 				$this->resource = @shmop_open($shmKey, 'a', 0, 0);
@@ -605,7 +604,7 @@ class Database
 				$this->mode = self::MEMORY_CACHE;
 				$this->resource = $rfile;
 				if (!\array_key_exists($rfile, $this->buffer)) {
-					$limit = self::getMemoryLimit();
+					$limit = $this->getMemoryLimit();
 					if ($limit !== false && $size > $limit) {
 						throw new \Exception(__CLASS__ . ": Insufficient memory to load file '{$rfile}'.", self::EXCEPTION_NO_MEMORY);
 					}
@@ -621,13 +620,8 @@ class Database
 		}
 
 		// determine the platform's float size
-		//
-		// NB: this should be a constant instead, and some unpack / typebanging magic
-		//     should be used to accomodate different float sizes, but, as the libreary
-		//     is written, this is the sanest thing to do anyway
-		//
 		if ($this->floatSize === null) {
-			$this->floatSize = \strlen(pack('f', M_PI));
+			$this->floatSize = \strlen(pack('f', \M_PI));
 		}
 
 		// extract database metadata
@@ -690,9 +684,9 @@ class Database
 		}
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Public interface  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Get the database's package (1-4).
@@ -982,7 +976,7 @@ class Database
 	/**
 	 * Tear down a shared memory segment created for the given file.
 	 *
-	 * @param string $file Filename of the BIN database whise segment must be deleted
+	 * @param string $file Filename of the BIN database segment must be deleted
 	 *
 	 * @throws \Exception
 	 */
@@ -1001,7 +995,7 @@ class Database
 			throw new \Exception(__CLASS__ . ": Database file '{$file}' does not seem to exist.", self::EXCEPTION_DBFILE_NOT_FOUND);
 		}
 
-		$shmKey = self::getShmKey($rfile);
+		$shmKey = $this->getShmKey($rfile);
 
 		// Try to open the memory segment for writing
 		$shmId = @shmop_open($shmKey, 'w', 0, 0);
@@ -1017,7 +1011,7 @@ class Database
 	/**
 	 * Return this database's available fields.
 	 *
-	 * @param bool $asNames Whether to return the mapped names intead of numbered constants
+	 * @param bool $asNames Whether to return the mapped names instead of numbered constants
 	 *
 	 * @return array
 	 */
@@ -1039,20 +1033,20 @@ class Database
 		return $result;
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Static tools  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Get memory limit from the current PHP settings (return false if no memory limit set).
 	 *
 	 * @return bool|int
 	 */
-	private static function getMemoryLimit()
+	private function getMemoryLimit()
 	{
 		// Get values if no cache
 		if ($this->memoryLimit === null) {
-			$limit = ini_get('memory_limit');
+			$limit = \ini_get('memory_limit');
 
 			// Feal with defaults
 			if ((string) $limit === '') {
@@ -1089,7 +1083,7 @@ class Database
 	 *
 	 * @return string
 	 */
-	private static function findFile($file = null)
+	private function findFile($file = null)
 	{
 		if ($file !== null) {
 			// Get actual file path
@@ -1126,7 +1120,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private static function wrap8($x)
+	private function wrap8($x)
 	{
 		return $x + ($x < 0 ? 256 : 0);
 	}
@@ -1138,7 +1132,7 @@ class Database
 	 *
 	 * @return int
 	 */
-	private static function wrap32($x)
+	private function wrap32($x)
 	{
 		return $x + ($x < 0 ? 4294967296 : 0);
 	}
@@ -1150,11 +1144,11 @@ class Database
 	 *
 	 * @return int
 	 */
-	private static function getShmKey($filename)
+	private function getShmKey($filename)
 	{
 		// This will create a shared memory key that deterministically depends only on
 		// the current file's path and the BIN file's path
-		return (int) sprintf('%u', self::wrap32(crc32(__FILE__ . ':' . $filename)));
+		return (int) sprintf('%u', $this->wrap32(crc32(__FILE__ . ':' . $filename)));
 	}
 
 	/**
@@ -1166,11 +1160,11 @@ class Database
 	 * @param int        $version IP version to use (either 4 or 6)
 	 * @param int|string $ip      IP number to check (int for IPv4, string for IPv6)
 	 * @param int|string $low     Lower bound (int for IPv4, string for IPv6)
-	 * @param int|string $high    Uppoer bound (int for IPv4, string for IPv6)
+	 * @param int|string $high    Upper bound (int for IPv4, string for IPv6)
 	 *
 	 * @return int
 	 */
-	private static function ipBetween($version, $ip, $low, $high)
+	private function ipBetween($version, $ip, $low, $high)
 	{
 		if ($version === 4) {
 			// Use normal PHP compares
@@ -1202,7 +1196,7 @@ class Database
 	 *
 	 * This method will return an array, whose components will be:
 	 * - first: 4 if the given IP address is an IPv4 one, 6 if it's an IPv6 one,
-	 *          or fase if it's neither.
+	 *          or false if it's neither.
 	 * - second: the IP address' number if its version is 4, the number string if
 	 *           its version is 6, false otherwise.
 	 *
@@ -1210,20 +1204,20 @@ class Database
 	 *
 	 * @return array
 	 */
-	private static function ipVersionAndNumber($ip)
+	private function ipVersionAndNumber($ip)
 	{
-		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+		if (filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
 			$number = sprintf('%u', ip2long($ip));
 
 			return [4, ($number == self::MAX_IPV4_RANGE) ? ($number - 1) : $number];
-		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+		} elseif (filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6)) {
 			$result = 0;
-			$ip = self::expand($ip);
+			$ip = $this->expand($ip);
 
 			// 6to4 Address - 2002::/16
 			if (substr($ip, 0, 4) == '2002') {
 				foreach (str_split(bin2hex(inet_pton($ip)), 8) as $word) {
-					$result = bcadd(bcmul($result, '4294967296', 0), self::wrap32(hexdec($word)), 0);
+					$result = bcadd(bcmul($result, '4294967296', 0), $this->wrap32(hexdec($word)), 0);
 				}
 
 				return [4, bcmod(bcdiv($result, bcpow(2, 80)), '4294967296')];
@@ -1235,7 +1229,7 @@ class Database
 			}
 
 			foreach (str_split(bin2hex(inet_pton($ip)), 8) as $word) {
-				$result = bcadd(bcmul($result, '4294967296', 0), self::wrap32(hexdec($word)), 0);
+				$result = bcadd(bcmul($result, '4294967296', 0), $this->wrap32(hexdec($word)), 0);
 			}
 
 			// IPv4 address in IPv6
@@ -1257,7 +1251,7 @@ class Database
 	 *
 	 * @return string
 	 */
-	private static function bcBin2Dec($data)
+	private function bcBin2Dec($data)
 	{
 		if (!$data) {
 			return;
@@ -1290,16 +1284,16 @@ class Database
 	 *
 	 * @return string
 	 */
-	private static function expand($ipv6)
+	private function expand($ipv6)
 	{
 		$hex = unpack('H*hex', inet_pton($ipv6));
 
 		return substr(preg_replace('/([A-f0-9]{4})/', '$1:', $hex['hex']), 0, -1);
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Caching backend abstraction  /////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Low level read function to abstract away the caching mode being used.
@@ -1319,15 +1313,15 @@ class Database
 		return $data = substr($this->buffer[$this->resource], $pos, $len);
 
 		default:
-		fseek($this->resource, $pos, SEEK_SET);
+		fseek($this->resource, $pos, \SEEK_SET);
 
 		return fread($this->resource, $len);
 	}
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Low-level read functions  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Low level function to fetch a string from the caching backend.
@@ -1360,7 +1354,7 @@ class Database
 	}
 
 	/**
-	 * Low level function to fetch a quadword (128 bits) from the caching backend.
+	 * Low level function to fetch a quad word (128 bits) from the caching backend.
 	 *
 	 * @param int $pos Position to read from
 	 *
@@ -1382,7 +1376,7 @@ class Database
 	private function readWord($pos)
 	{
 		// Unpack a long's worth of data
-		return self::wrap32(unpack('V', $this->read($pos - 1, 4))[1]);
+		return $this->wrap32(unpack('V', $this->read($pos - 1, 4))[1]);
 	}
 
 	/**
@@ -1395,12 +1389,12 @@ class Database
 	private function readByte($pos)
 	{
 		// Unpack a byte's worth of data
-		return self::wrap8(unpack('C', $this->read($pos - 1, 1))[1]);
+		return $this->wrap8(unpack('C', $this->read($pos - 1, 1))[1]);
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  High-level read functions  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * High level function to fetch the country name and code.
@@ -1416,7 +1410,7 @@ class Database
 			$countryCode = self::INVALID_IP_ADDRESS;
 			$countryName = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::COUNTRY_CODE][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$countryCode = self::FIELD_NOT_SUPPORTED;
 			$countryName = self::FIELD_NOT_SUPPORTED;
 		} else {
@@ -1443,7 +1437,7 @@ class Database
 			// Deal with invalid IPs
 			$regionName = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::REGION_NAME][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$regionName = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the region name
@@ -1466,7 +1460,7 @@ class Database
 			// Deal with invalid IPs
 			$cityName = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::CITY_NAME][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$cityName = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the city name
@@ -1489,7 +1483,7 @@ class Database
 			// Deal with invalid IPs
 			$isp = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::ISP][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$isp = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read isp name
@@ -1512,7 +1506,7 @@ class Database
 			// Deal with invalid IPs
 			$proxyType = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::PROXY_TYPE][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$proxyType = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read proxy type
@@ -1535,7 +1529,7 @@ class Database
 			// Deal with invalid IPs
 			$domain = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::DOMAIN][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$domain = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1558,7 +1552,7 @@ class Database
 			// Deal with invalid IPs
 			$usageType = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::USAGE_TYPE][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$usageType = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1581,7 +1575,7 @@ class Database
 			// Deal with invalid IPs
 			$asn = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::ASN][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$asn = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1604,7 +1598,7 @@ class Database
 			// Deal with invalid IPs
 			$as = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::_AS][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$as = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1627,7 +1621,7 @@ class Database
 			// Deal with invalid IPs
 			$lastSeen = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::LAST_SEEN][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$lastSeen = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1650,7 +1644,7 @@ class Database
 			// Deal with invalid IPs
 			$threat = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::THREAT][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$threat = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1673,7 +1667,7 @@ class Database
 			// Deal with invalid IPs
 			$provider = self::INVALID_IP_ADDRESS;
 		} elseif ($this->columns[self::PROVIDER][$this->type] === 0) {
-			// If the field is not suported, return accordingly
+			// If the field is not supported, return accordingly
 			$provider = self::FIELD_NOT_SUPPORTED;
 		} else {
 			// Read the domain
@@ -1683,12 +1677,12 @@ class Database
 		return $provider;
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Binary search and support functions  /////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * High level fucntion to read an IP address of the given version.
+	 * High level function to read an IP address of the given version.
 	 *
 	 * @param int $version IP version to read (either 4 or 6, returns false on anything else)
 	 * @param int $pos     Position to read from
@@ -1699,7 +1693,7 @@ class Database
 	{
 		if ($version === 4) {
 			// Read a standard PHP int
-			return self::wrap32($this->readWord($pos));
+			return $this->wrap32($this->readWord($pos));
 		} elseif ($version === 6) {
 			// Read as BCMath int (quad)
 			return $this->readQuad($pos);
@@ -1762,7 +1756,7 @@ class Database
 			}
 
 			// Determine whether to return, repeat on the lower half, or repeat on the upper half
-			switch (self::ipBetween($version, $ipNumber, $ipStart, $ipEnd)) {
+			switch ($this->ipBetween($version, $ipNumber, $ipStart, $ipEnd)) {
 				case 0:
 					return $base + $offset + $mid * $width;
 

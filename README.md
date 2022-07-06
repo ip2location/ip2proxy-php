@@ -20,7 +20,7 @@ Below are the methods supported in this class.
 |**string** getDatabaseVersion()|Return the database's compilation date as a string of the form 'YYYY-MM-DD',|
 |**string** getPackageVersion()|Return the database's type, 1 to 10 respectively for PX1 to PX11. Please visit https://www.ip2location.com/databases/ip2proxy for details.|
 |**string** getModuleVersion()|Return the version of module.|
-|**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px10-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
+|**array** lookup($ip)|Return the IP information in array. Below is the information returned:<ul><li>ipNumber</li><li>ipVersion</li><li>ipAddress</li><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul>You can visit [IP2Location](https://www.ip2location.com/database/px11-ip-proxytype-country-region-city-isp-domain-usagetype-asn-lastseen-threat-residential-provider) website for the description of each field. Note: although the above names are not exactly matched with the names given in this link, but they are self-described.|
 
 
 
@@ -28,7 +28,7 @@ Below are the methods supported in this class.
 
 | Method Name | Description                                                  |
 | ----------- | ------------------------------------------------------------ |
-| Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX10)</li><li>Use HTTPS or HTTP</li></ol> |
+| Constructor | Expect 3 input parameters:<ol><li>IP2Proxy API Key.</li><li>Package (PX1 - PX11)</li><li>Use HTTPS or HTTP</li></ol> |
 | lookup      | Return the proxy information in array.<ul><li>countryCode</li><li>countryName</li><li>regionName</li><li>cityName</li><li>isp</li><li>domain</li><li>usageType</li><li>asn</li><li>as</li><li>lastSeen</li><li>threat</li><li>proxyType</li><li>isProxy</li><li>provider</li></ul> |
 | getCredit   | Return remaining credit of the web service account.          |
 
@@ -101,7 +101,7 @@ Start your lookup by following codes:
 require 'vendor/autoload.php';
 
 // Lookup by Web API
-$ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX10', false);
+$ws = new \IP2Proxy\WebService('YOUR_API_KEY',  'PX11', false);
 
 $results = $ws->lookup('1.0.241.135');
 
@@ -137,7 +137,7 @@ if ($results !== false) {
 | PUB  | Public Proxies. These are services which make connection requests on a user's behalf. Proxy server software can be configured by the administrator to listen on some specified port. These differ from  VPNs in that the proxies usually have limited functions compare to VPNs. | High      |
 | WEB  | Web Proxies. These are web services which make web  requests on a user's behalf. These differ from VPNs or Public Proxies in that they are simple web-based proxies rather than operating at the IP  address and other ports level. | High      |
 | SES  | Search Engine Robots. These are services which perform  crawling or scraping to a website, such as, the search engine spider or  bots engine. | Low       |
-| RES  | Residential proxies. These services offer users proxy  connections through residential ISP with or without consents of peers to share their idle resources. Only available with PX10 | Medium    |
+| RES  | Residential proxies. These services offer users proxy  connections through residential ISP with or without consents of peers to share their idle resources. Only available with PX11 | Medium    |
 
 
 
