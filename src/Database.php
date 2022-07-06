@@ -198,7 +198,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const VERSION = '4.1.0';
+	private const VERSION = '4.1.1';
 
 	/**
 	 * Include the IP address of the looked up IP address.
