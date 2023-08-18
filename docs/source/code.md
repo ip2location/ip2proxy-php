@@ -1,4 +1,4 @@
-# IP2Location PHP API
+# IP2Proxy PHP API
 
 ## Database Class
 ```{py:class} Database(database_file_path, file_mode)
