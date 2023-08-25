@@ -2,10 +2,10 @@
 
 ## Dependencies
 
-This library requires IP2Location BIN database to function. You may download the BIN database at
+This library requires IP2Proxy BIN database to function. You may download the BIN database at
 
--   IP2Location LITE BIN Data (Free): <https://lite.ip2location.com>
--   IP2Location Commercial BIN Data (Comprehensive):
+-   IP2Proxy LITE BIN Data (Free): <https://lite.ip2location.com>
+-   IP2Proxy Commercial BIN Data (Comprehensive):
     <https://www.ip2location.com>
 
 :::{note}
@@ -24,7 +24,7 @@ composer require ip2location/ip2proxy-php
 
 ### Query geolocation information from BIN database
 
-You can query the geolocation information from the IP2Location BIN database as below:
+You can query the geolocation information from the IP2Proxy BIN database as below:
 
 ```php
 require 'vendor/autoload.php';
