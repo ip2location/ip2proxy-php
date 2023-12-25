@@ -581,7 +581,9 @@ class Database
 						shmop_write($shmId, $buf, $pointer);
 						$pointer += self::SHM_CHUNK_SIZE;
 					}
-					shmop_close($shmId);
+					if (PHP_MAJOR_VERSION < 8) {
+						shmop_close($shmId);
+					}
 					fclose($fp);
 
 					// now open the memory segment for readonly access
