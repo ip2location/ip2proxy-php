@@ -29,7 +29,7 @@ You can query the geolocation information from the IP2Proxy BIN database as belo
 ```php
 require 'vendor/autoload.php';
 
-$db = new \IP2Proxy\Database('vendor/ip2location/ip2proxy-php/data/PX11.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
+$db = new \IP2Proxy\Database('vendor/ip2location/ip2proxy-php/data/PX12.SAMPLE.BIN', \IP2PROXY\Database::FILE_IO);
 
 $records = $db->lookup('1.0.0.8', \IP2PROXY\Database::ALL);
 
@@ -42,7 +42,7 @@ echo '<p><strong>State: </strong>' . $records['regionName'] . '</p>';
 echo '<p><strong>City: </strong>' . $records['cityName'] . '</p>';
 
 /*
-  Type of proxy: VPN, TOR, DCH, PUB, WEB, RES (RES available in PX11 only)
+  Type of proxy: VPN, TOR, DCH, PUB, WEB, RES (RES available in PX11 & PX12 only)
 */
 echo '<p><strong>Proxy Type: </strong>' . $records['proxyType'] . '</p>';
 
@@ -61,4 +61,5 @@ echo '<p><strong>AS: </strong>' . $records['as'] . '</p>';
 echo '<p><strong>Last Seen: </strong>' . $records['lastSeen'] . '</p>';
 echo '<p><strong>Threat: </strong>' . $records['threat'] . '</p>';
 echo '<p><strong>Provider: </strong>' . $records['provider'] . '</p>';
+echo '<p><strong>Fraud Score: </strong>' . $records['fraudScore'] . '</p>';
 ```

@@ -30,7 +30,7 @@ class WebServiceTest extends TestCase
 		$records = $ws->lookup('1.0.0.8');
 
 		$this->assertEquals(
-			'US',
+			'AU',
 			$records['countryCode'],
 		);
 	}

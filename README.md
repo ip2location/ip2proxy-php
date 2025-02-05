@@ -22,9 +22,9 @@ To learn more about installation, usage, and code examples, please visit the dev
 | PUB  | Public Proxies. These are services which make connection requests on a user's behalf. Proxy server software can be configured by the administrator to listen on some specified port. These differ from  VPNs in that the proxies usually have limited functions compare to VPNs. | High      |
 | WEB  | Web Proxies. These are web services which make web  requests on a user's behalf. These differ from VPNs or Public Proxies in that they are simple web-based proxies rather than operating at the IP  address and other ports level. | High      |
 | SES  | Search Engine Robots. These are services which perform  crawling or scraping to a website, such as, the search engine spider or  bots engine. | Low       |
-| RES  | Residential proxies. These services offer users proxy  connections through residential ISP with or without consents of peers to share their idle resources. Only available with PX10 & PX11 | Medium    |
-| CPN  | Consumer Privacy Network: These services ensure encrypted traffic from the user's browser by routing internet requests through relays, concealing the IP address, location, and browsing activity. Only available with PX11 | Low    |
-| EPN  | Enterprise Private Network: Services like SASE or SD-WAN combine network security functions with wide-area networking (WAN) capabilities to meet the secure remote access needs of organizations. Only available with PX11 | Low    |
+| RES  | Residential proxies. These services offer users proxy  connections through residential ISP with or without consents of peers to share their idle resources. Only available with PX10 - PX12 | Medium    |
+| CPN  | Consumer Privacy Network: These services ensure encrypted traffic from the user's browser by routing internet requests through relays, concealing the IP address, location, and browsing activity. Only available with PX11 & PX12 | Low    |
+| EPN  | Enterprise Private Network: Services like SASE or SD-WAN combine network security functions with wide-area networking (WAN) capabilities to meet the secure remote access needs of organizations. Only available with PX11 & PX12 | Low    |
 
 
 

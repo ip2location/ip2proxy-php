@@ -19,7 +19,7 @@ class DatabaseTest extends TestCase
 
 	public function testInvalidIp()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 		$records = $db->lookup('1.0.0.x', \IP2Proxy\Database::ALL);
 
@@ -28,151 +28,144 @@ class DatabaseTest extends TestCase
 
 	public function testIpv4CountryCode()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$records = $db->lookup('1.0.0.8', \IP2Proxy\Database::ALL);
+		$records = $db->lookup('23.83.130.186', \IP2Proxy\Database::ALL);
 
 		$this->assertEquals('US', $records['countryCode']);
 	}
 
 	public function testIpv4CountryName()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$records = $db->lookup('1.0.0.8', \IP2Proxy\Database::ALL);
+		$records = $db->lookup('23.83.130.186', \IP2Proxy\Database::ALL);
 
-		$this->assertEquals(
-			'United States of America',
-			$records['countryName'],
-		);
+		$this->assertEquals('United States of America', $records['countryName']);
 	}
 
 	public function testLookupCountryCode()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('US', $db->lookup('1.0.0.8', \IP2Proxy\Database::COUNTRY_CODE));
+		$this->assertEquals('US', $db->lookup('23.83.130.186', \IP2Proxy\Database::COUNTRY_CODE));
 	}
 
 	public function testLookupCountryName()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('United States of America', $db->lookup('1.0.0.8', \IP2Proxy\Database::COUNTRY_NAME));
+		$this->assertEquals('United States of America', $db->lookup('23.83.130.186', \IP2Proxy\Database::COUNTRY_NAME));
 	}
 
 	public function testLookupRegionName()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('California', $db->lookup('1.0.0.8', \IP2Proxy\Database::REGION_NAME));
+		$this->assertEquals('Arizona', $db->lookup('23.83.130.186', \IP2Proxy\Database::REGION_NAME));
 	}
 
 	public function testLookupCityName()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('Los Angeles', $db->lookup('1.0.0.8', \IP2Proxy\Database::CITY_NAME));
+		$this->assertEquals('Phoenix', $db->lookup('23.83.130.186', \IP2Proxy\Database::CITY_NAME));
 	}
 
 	public function testLookupIsp()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('APNIC and CloudFlare DNS Resolver Project', $db->lookup('1.0.0.8', \IP2Proxy\Database::ISP));
+		$this->assertEquals('Leaseweb USA Inc.', $db->lookup('23.83.130.186', \IP2Proxy\Database::ISP));
 	}
 
 	public function testLookupIsProxy()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals(2, (string) $db->lookup('1.0.0.8', \IP2Proxy\Database::IS_PROXY));
+		$this->assertEquals(1, (string) $db->lookup('23.83.130.186', \IP2Proxy\Database::IS_PROXY));
 	}
 
 	public function testLookupProxyType()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('DCH', $db->lookup('1.0.0.8', \IP2Proxy\Database::PROXY_TYPE));
+		$this->assertEquals('VPN', $db->lookup('23.83.130.186', \IP2Proxy\Database::PROXY_TYPE));
 	}
 
 	public function testLookupDomain()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('cloudflare.com', $db->lookup('1.0.0.8', \IP2Proxy\Database::DOMAIN));
+		$this->assertEquals('leaseweb.com', $db->lookup('23.83.130.186', \IP2Proxy\Database::DOMAIN));
 	}
 
 	public function testLookupUsageType()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('CDN', $db->lookup('1.0.0.8', \IP2Proxy\Database::USAGE_TYPE));
+		$this->assertEquals('DCH', $db->lookup('23.83.130.186', \IP2Proxy\Database::USAGE_TYPE));
 	}
 
 	public function testLookupAsn()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('13335', $db->lookup('1.0.0.8', \IP2Proxy\Database::ASN));
+		$this->assertEquals('19148', $db->lookup('23.83.130.186', \IP2Proxy\Database::ASN));
 	}
 
 	public function testLookupAs()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('CLOUDFLARENET', $db->lookup('1.0.0.8', \IP2Proxy\Database::_AS));
+		$this->assertEquals('Leaseweb USA Inc.', $db->lookup('23.83.130.186', \IP2Proxy\Database::_AS));
 	}
 
 	public function testLookupLastSeen()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('22', $db->lookup('1.0.0.8', \IP2Proxy\Database::LAST_SEEN));
+		$this->assertEquals('1', $db->lookup('23.83.130.186', \IP2Proxy\Database::LAST_SEEN));
 	}
 
 	public function testLookupThreat()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$this->assertEquals('-', $db->lookup('1.0.0.8', \IP2Proxy\Database::THREAT));
+		$this->assertEquals('SPAM', $db->lookup('23.83.130.186', \IP2Proxy\Database::THREAT));
 	}
 
-	public function testIpv6CountryCode()
+	public function testLookupProvider()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$records = $db->lookup('2c0f:ffa0::4', \IP2Proxy\Database::ALL);
-
-		$this->assertEquals('UG', $records['countryCode']);
+		$this->assertEquals('HideMyAss', $db->lookup('23.83.130.186', \IP2Proxy\Database::PROVIDER));
 	}
 
-	public function testIpv6CountryName()
+	public function testLookupFraudScore()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
-		$records = $db->lookup('2c0f:ffa0::4', \IP2Proxy\Database::ALL);
-
-		$this->assertEquals('Uganda', $records['countryName']);
+		$this->assertEquals('99', $db->lookup('23.83.130.186', \IP2Proxy\Database::FRAUD_SCORE));
 	}
 
 	public function testPackageVersion()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 		$this->assertMatchesRegularExpression('/^[0-9]+$/', (string) $db->getPackageVersion());
 	}
 
 	public function testModuleVersion()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 		$this->assertMatchesRegularExpression('/^[0-9]+\.[0-9]+\.[0-9]+$/', (string) $db->getModuleVersion());
 	}
 
 	public function testDatabaseVersion()
 	{
-		$db = new \IP2Proxy\Database('./data/PX11.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
+		$db = new \IP2Proxy\Database('./data/PX12.SAMPLE.BIN', \IP2Proxy\Database::FILE_IO);
 
 		$this->assertMatchesRegularExpression('/^[0-9]+\.[0-9]+\.[0-9]+$/', (string) $db->getDatabaseVersion());
 	}

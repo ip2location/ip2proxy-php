@@ -149,6 +149,13 @@ class Database
 	public const PROVIDER = 14;
 
 	/**
+	 * Fraud score.
+	 *
+	 * @var int
+	 */
+	public const FRAUD_SCORE = 15;
+
+	/**
 	 * Country name and code.
 	 *
 	 * @var int
@@ -198,7 +205,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const VERSION = '4.1.1';
+	private const VERSION = '4.2.0';
 
 	/**
 	 * Include the IP address of the looked up IP address.
@@ -333,20 +340,21 @@ class Database
 	 * @var array
 	 */
 	private $columns = [
-		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12],
-		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16,  16,  16],
-		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20,  20,  20],
-		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24,  24,  24],
-		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8],
-		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28,  28,  28],
-		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32,  32,  32],
-		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36,  36,  36],
-		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40,  40,  40],
-		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44,  44,  44],
-		self::THREAT       => [0,   0,   0,   0,   0,   0,   0,   0,   48,  48, 48],
-		self::PROVIDER     => [0,   0,   0,   0,   0,   0,   0,   0,    0,   0, 52],
-  ];
+		self::COUNTRY_CODE => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12, 12],
+		self::COUNTRY_NAME => [8,  12,  12,  12,  12,  12,  12,  12,  12,  12,  12, 12],
+		self::REGION_NAME  => [0,   0,  16,  16,  16,  16,  16,  16,  16,  16,  16, 16],
+		self::CITY_NAME    => [0,   0,  20,  20,  20,  20,  20,  20,  20,  20,  20, 20],
+		self::ISP          => [0,   0,   0,  24,  24,  24,  24,  24,  24,  24,  24, 24],
+		self::PROXY_TYPE   => [0,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,  8],
+		self::DOMAIN       => [0,   0,   0,   0,  28,  28,  28,  28,  28,  28,  28, 28],
+		self::USAGE_TYPE   => [0,   0,   0,   0,   0,  32,  32,  32,  32,  32,  32, 32],
+		self::ASN          => [0,   0,   0,   0,   0,   0,  36,  36,  36,  36,  36, 36],
+		self::_AS          => [0,   0,   0,   0,   0,   0,  40,  40,  40,  40,  40, 40],
+		self::LAST_SEEN    => [0,   0,   0,   0,   0,   0,   0,  44,  44,  44,  44, 44],
+		self::THREAT       => [0,   0,   0,   0,   0,   0,   0,   0,   48,  48, 48, 48],
+		self::PROVIDER     => [0,   0,   0,   0,   0,   0,   0,   0,    0,   0, 52, 52],
+		self::FRAUD_SCORE  => [0,   0,   0,   0,   0,   0,   0,   0,    0,   0,  0, 56],
+	];
 
 	/**
 	 * Column name mapping.
@@ -368,6 +376,7 @@ class Database
 		self::LAST_SEEN    => 'lastSeen',
 		self::THREAT       => 'threat',
 		self::PROVIDER     => 'provider',
+		self::FRAUD_SCORE  => 'fraudScore',
 		self::IP_ADDRESS   => 'ipAddress',
 		self::IP_VERSION   => 'ipVersion',
 		self::IP_NUMBER    => 'ipNumber',
@@ -380,6 +389,7 @@ class Database
 	 */
 	private $databases = [
 		// IPv4 databases
+		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER-FRAUDSCORE',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
 		'IP2PROXY-IP-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
@@ -393,6 +403,7 @@ class Database
 		'IP2PROXY-IP-COUNTRY',
 
 		// IPv6 databases
+		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER-FRAUDSCORE',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL-PROVIDER',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT-RESIDENTIAL',
 		'IPV6-PROXYTYPE-COUNTRY-REGION-CITY-ISP-DOMAIN-USAGETYPE-ASN-LASTSEEN-THREAT',
@@ -670,19 +681,19 @@ class Database
 	{
 		switch ($this->mode) {
 			case self::FILE_IO:
-			// free the file pointer
-			if ($this->resource !== false) {
-				fclose($this->resource);
-				$this->resource = false;
-			}
-			break;
+				// free the file pointer
+				if ($this->resource !== false) {
+					fclose($this->resource);
+					$this->resource = false;
+				}
+				break;
 			case self::SHARED_MEMORY:
-			// detach from the memory segment
-			if ($this->resource !== false) {
-				shmop_close($this->resource);
-				$this->resource = false;
-			}
-			break;
+				// detach from the memory segment
+				if ($this->resource !== false) {
+					shmop_close($this->resource);
+					$this->resource = false;
+				}
+				break;
 		}
 	}
 
@@ -766,6 +777,7 @@ class Database
 			$ifields[] = self::LAST_SEEN;
 			$ifields[] = self::THREAT;
 			$ifields[] = self::PROVIDER;
+			$ifields[] = self::FRAUD_SCORE;
 			$ifields[] = self::COUNTRY;
 			$ifields[] = self::IP_ADDRESS;
 			$ifields[] = self::IP_VERSION;
@@ -790,6 +802,7 @@ class Database
 			self::LAST_SEEN    => false,
 			self::THREAT       => false,
 			self::PROVIDER     => false,
+			self::FRAUD_SCORE  => false,
 			self::COUNTRY      => false,
 			self::IP_ADDRESS   => false,
 			self::IP_VERSION   => false,
@@ -928,6 +941,13 @@ class Database
 					}
 					break;
 
+				case self::FRAUD_SCORE:
+					if (!$done[self::FRAUD_SCORE]) {
+						$results[self::FRAUD_SCORE] = $this->readFraudScore($pointer);
+						$done[self::FRAUD_SCORE] = true;
+					}
+					break;
+
 				case self::IP_ADDRESS:
 					if (!$done[self::IP_ADDRESS]) {
 						$results[self::IP_ADDRESS] = $ip;
@@ -1063,12 +1083,12 @@ class Database
 			} else {
 				// Deal with shorthand bytes
 				switch (strtoupper(substr($limit, -1))) {
-			case 'G': $value *= 1024;
-			// no break
-			case 'M': $value *= 1024;
-			// no break
-			case 'K': $value *= 1024;
-		}
+					case 'G': $value *= 1024;
+						// no break
+					case 'M': $value *= 1024;
+						// no break
+					case 'K': $value *= 1024;
+				}
 			}
 			$this->memoryLimit = $value;
 		}
@@ -1264,7 +1284,7 @@ class Database
 			unpack('V', substr($data, 8, 4)),
 			unpack('V', substr($data, 4, 4)),
 			unpack('V', substr($data, 0, 4)),
-	  ];
+		];
 
 		foreach ($parts as &$part) {
 			if ($part[1] < 0) {
@@ -1308,17 +1328,17 @@ class Database
 	private function read($pos, $len)
 	{
 		switch ($this->mode) {
-		case self::SHARED_MEMORY:
-		return shmop_read($this->resource, $pos, $len);
+			case self::SHARED_MEMORY:
+				return shmop_read($this->resource, $pos, $len);
 
-		case self::MEMORY_CACHE:
-		return $data = substr($this->buffer[$this->resource], $pos, $len);
+			case self::MEMORY_CACHE:
+				return $data = substr($this->buffer[$this->resource], $pos, $len);
 
-		default:
-		fseek($this->resource, $pos, \SEEK_SET);
+			default:
+				fseek($this->resource, $pos, \SEEK_SET);
 
-		return fread($this->resource, $len);
-	}
+				return fread($this->resource, $len);
+		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1679,6 +1699,29 @@ class Database
 		return $provider;
 	}
 
+	/**
+	 * High level function to fetch the Fraud score.
+	 *
+	 * @param int $pointer Position to read from, if false, return self::INVALID_IP_ADDRESS
+	 *
+	 * @return string
+	 */
+	private function readFraudScore($pointer)
+	{
+		if ($pointer === false) {
+			// Deal with invalid IPs
+			$fraudScore = self::INVALID_IP_ADDRESS;
+		} elseif ($this->columns[self::FRAUD_SCORE][$this->type] === 0) {
+			// If the field is not supported, return accordingly
+			$fraudScore = self::FIELD_NOT_SUPPORTED;
+		} else {
+			// Read the domain
+			$fraudScore = $this->readString($this->columns[self::FRAUD_SCORE][$this->type]);
+		}
+
+		return $fraudScore;
+	}
+
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  Binary search and support functions  /////////////////////////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1769,7 +1812,7 @@ class Database
 				case 1:
 					$low = $mid + 1;
 					break;
-				}
+			}
 		}
 
 		return false;

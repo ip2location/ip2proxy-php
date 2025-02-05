@@ -9,7 +9,7 @@ Load the IP2Location BIN database.
 ```
 
 ```{py:function} getPackageVersion()
-Return the database's type, 1 to 10 respectively for PX1 to PX11. Please visit https://www.ip2location.com/databases/ip2proxy for details.
+Return the database's type, 1 to 10 respectively for PX1 to PX12. Please visit https://www.ip2location.com/databases/ip2proxy for details.
 
 :return: Returns the package version.
 :rtype: string
@@ -53,4 +53,5 @@ Retrieve geolocation information for an IP address.
 | threat         |     Security threat reported. |
 | proxyType      |     Type of proxy. |
 | provider       |     Name of VPN provider if available. |
+| fraudScore     |     Potential risk score (0 - 99) associated with IP address.  |
 ```
