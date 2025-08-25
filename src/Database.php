@@ -205,7 +205,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const VERSION = '4.2.0';
+	private const VERSION = '4.2.1';
 
 	/**
 	 * Include the IP address of the looked up IP address.
@@ -592,9 +592,11 @@ class Database
 						shmop_write($shmId, $buf, $pointer);
 						$pointer += self::SHM_CHUNK_SIZE;
 					}
+
 					if (PHP_MAJOR_VERSION < 8) {
 						shmop_close($shmId);
 					}
+
 					fclose($fp);
 
 					// now open the memory segment for readonly access
@@ -690,7 +692,9 @@ class Database
 			case self::SHARED_MEMORY:
 				// detach from the memory segment
 				if ($this->resource !== false) {
-					shmop_close($this->resource);
+					if (PHP_MAJOR_VERSION < 8) {
+						shmop_close($this->resource);
+					}
 					$this->resource = false;
 				}
 				break;
@@ -1027,7 +1031,10 @@ class Database
 
 		// Delete and close the descriptor
 		shmop_delete($shmId);
-		shmop_close($shmId);
+
+		if (PHP_MAJOR_VERSION < 8) {
+			shmop_close($shmId);
+		}
 	}
 
 	/**
