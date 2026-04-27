@@ -205,7 +205,7 @@ class Database
 	 *
 	 * @var string
 	 */
-	private const VERSION = '4.2.1';
+	private const VERSION = '4.3.0';
 
 	/**
 	 * Include the IP address of the looked up IP address.
@@ -885,7 +885,7 @@ class Database
 						} else {
 							$proxyType = $this->readProxyType($pointer);
 
-							$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES') ? 2 : 1);
+							$results[self::IS_PROXY] = ($proxyType == '-') ? 0 : (($proxyType == 'DCH' || $proxyType == 'SES' || $proxyType == 'AIC') ? 2 : 1);
 
 							if (\strlen($proxyType) > 3) {
 								$results[self::IS_PROXY] = -1;
